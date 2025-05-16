@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "7070467852",
+    "project_id": "realidaaumentada-90118",
+    "storage_bucket": "realidaaumentada-90118.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:7070467852:android:fb27433e3835ac847b2b29",
+        "android_client_info": {
+          "package_name": "com.example.tiendarealidaaumentada"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB5JfVN3e3zgQhlItC7DyOB9I-eQ0oXBp8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
