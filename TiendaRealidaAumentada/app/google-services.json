@@ -12,7 +12,20 @@
           "package_name": "com.example.tiendarealidaaumentada"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "7070467852-e7k58vkk131r7g1aq26eofqk1i2vidvc.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.tiendarealidaaumentada",
+            "certificate_hash": "24cfdd436ef3d2171593a883bb6705fdd222255c"
+          }
+        },
+        {
+          "client_id": "7070467852-7qrv3uqp16aab684bao2gk6ngmjss6vi.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyB5JfVN3e3zgQhlItC7DyOB9I-eQ0oXBp8"
@@ -20,7 +33,12 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "7070467852-7qrv3uqp16aab684bao2gk6ngmjss6vi.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }
