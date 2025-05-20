@@ -1,9 +1,12 @@
 package com.example.tiendarealidaaumentada;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -18,6 +21,7 @@ import com.example.tiendarealidaaumentada.Adapter.GenericAdapter;
 import com.example.tiendarealidaaumentada.models.Producto;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class Home extends AppCompatActivity {
 
@@ -28,10 +32,11 @@ public class Home extends AppCompatActivity {
     private Producto producto;
     private TextView textViewNombre;
     private TextView textViewPrecio;
-    private Button btnAgregarCarrito, btnVerAR;
+    private Button btnAgregarCarrito, btnVerAR, btnVerCarrito;
     private ImageView imageViewProducto;
     private GenericAdapter<Producto> adapter;
     private ArrayList<Producto> productos = new ArrayList<>();
+    private ArrayList<Producto> carrito = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +50,10 @@ public class Home extends AppCompatActivity {
         });
         recyclerViewCategoria = findViewById(R.id.recyclerCategorias);
         recyclerViewProductos = findViewById(R.id.recyclerProductos);
+
+        btnVerCarrito = findViewById(R.id.btnCarrito);
+
+
 
         categorias.add("Categoria 1");
         categorias.add("Categoria 2");
@@ -62,6 +71,11 @@ public class Home extends AppCompatActivity {
             textViewPrecio.setText(String.valueOf(producto.getPrecio()));
 
             btnAgregarCarrito = holder.itemView.findViewById(R.id.btnAgregarCarrito);
+            btnAgregarCarrito.setOnClickListener(v -> {
+                carrito.add(producto);
+                Toast.makeText(Home.this, producto.getNombre() + " agregado al carrito", Toast.LENGTH_SHORT).show();
+            });
+
             btnVerAR = holder.itemView.findViewById(R.id.btnVerEnAR);
             imageViewProducto = holder.itemView.findViewById(R.id.imageView);
             imageViewProducto.setImageResource(producto.getImagenUrl());
@@ -76,6 +90,12 @@ public class Home extends AppCompatActivity {
 
         adapter.updateData(productos);
 
+        btnVerCarrito.setOnClickListener(v -> {
+            Intent intent = new Intent(Home.this, Carrito.class);
+            intent.putParcelableArrayListExtra("carrito", carrito);
+            startActivity(intent);
+        });
 
     }
+
 }
