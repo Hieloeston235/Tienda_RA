@@ -60,7 +60,16 @@ public class Home extends AppCompatActivity {
         categorias.add("Categoria 3");
 
         recyclerViewCategoria.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
-        categoriasAdapter = new CategoriasAdapter(categorias);
+        categoriasAdapter = new CategoriasAdapter(categorias, categoriaSeleccionada -> {
+            ArrayList<Producto> productosFiltrados = new ArrayList<>();
+            for (Producto p : productos) {
+                if (p.getCategoria().equals(categoriaSeleccionada)) {
+                    productosFiltrados.add(p);
+                }
+            }
+            adapter.updateData(productosFiltrados);
+        });
+
         recyclerViewCategoria.setAdapter(categoriasAdapter);
 
         adapter = new GenericAdapter<>(new ArrayList<>(), R.layout.list_item_producto, (holder, producto) -> {
@@ -84,9 +93,8 @@ public class Home extends AppCompatActivity {
         recyclerViewProductos.setLayoutManager(new LinearLayoutManager(this));
         recyclerViewProductos.setAdapter(adapter);
 
-        productos.add(new Producto("Motherboard", 10.99, R.drawable.motherboard));
-        productos.add(new Producto("Teclado", 15.99, R.drawable.teclado));
-
+        productos.add(new Producto("Motherboard", 10.99, R.drawable.motherboard, "Categoria 1"));
+        productos.add(new Producto("Teclado", 15.99, R.drawable.teclado, "Categoria 2"));
 
         adapter.updateData(productos);
 

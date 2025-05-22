@@ -9,20 +9,26 @@ public class Producto implements Parcelable {
     private String nombre;
     private double precio;
     private int imagenUrl;
-
-    public Producto(String nombre, double precio, int imagenUrl) {
+    private String Categoria;
+    private int cantidad;
+    public Producto(String nombre, double precio, int imagenUrl, String Categoria) {
         this.nombre = nombre;
         this.precio = precio;
         this.imagenUrl = imagenUrl;
+        this.Categoria = Categoria;
+        this.cantidad = 1;
     }
 
     public Producto() {
+        this.cantidad = 1;
     }
 
     protected Producto(Parcel in) {
         nombre = in.readString();
         precio = in.readDouble();
         imagenUrl = in.readInt();
+        Categoria = in.readString();
+        cantidad = in.readInt();
     }
 
     public static final Creator<Producto> CREATOR = new Creator<Producto>() {
@@ -61,6 +67,25 @@ public class Producto implements Parcelable {
         this.imagenUrl = imagenUrl;
     }
 
+    public String getCategoria() {
+        return Categoria;
+    }
+
+    public void setCategoria(String Categoria) {
+        this.Categoria = Categoria;
+    }
+
+    public int getCantidad() {
+        return cantidad;
+    }
+
+    public void setCantidad(int cantidad) {
+        this.cantidad = cantidad;
+    }
+    public double getPrecioTotal() {
+        return precio * cantidad;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -71,5 +96,7 @@ public class Producto implements Parcelable {
         parcel.writeString(nombre);
         parcel.writeDouble(precio);
         parcel.writeInt(imagenUrl);
+        parcel.writeString(Categoria);
+        parcel.writeInt(cantidad);
     }
 }

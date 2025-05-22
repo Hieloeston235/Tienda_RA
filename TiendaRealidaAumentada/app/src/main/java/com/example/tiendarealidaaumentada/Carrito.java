@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -23,7 +24,7 @@ public class Carrito extends AppCompatActivity {
     private RecyclerView recyclerCarrito;
     private GenericAdapter<Producto> carritoAdapter;
     private ArrayList<Producto> carrito;
-    private TextView txtTotal;
+    private TextView txtTotal,txtSubtotal, txtImpuesto;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,6 +34,8 @@ public class Carrito extends AppCompatActivity {
 
         recyclerCarrito = findViewById(R.id.recyclerCarrito);
         txtTotal = findViewById(R.id.txtTotal);
+        txtSubtotal = findViewById(R.id.txtSubtotal);
+        txtImpuesto = findViewById(R.id.txtImpuestos);
 
         carrito = getIntent().getParcelableArrayListExtra("carrito");
         if (carrito == null) carrito = new ArrayList<>();
@@ -44,27 +47,84 @@ public class Carrito extends AppCompatActivity {
             TextView precio = holder.itemView.findViewById(R.id.txtPrecioCarritoProducto);
             ImageView imagen = holder.itemView.findViewById(R.id.imageViewProductoCarrito);
             Button eliminar = holder.itemView.findViewById(R.id.btnEliminarProducto);
+            TextView cantidad = holder.itemView.findViewById(R.id.text_value);
+            TextView increment = holder.itemView.findViewById(R.id.textButtom_increment);
+            TextView decrement = holder.itemView.findViewById(R.id.textButtom_decrement);
 
             nombre.setText(producto.getNombre());
-            precio.setText("$" + producto.getPrecio());
+            precio.setText("$" + String.format("%.2f", producto.getPrecio()));  // Mostrar precio del producto
             imagen.setImageResource(producto.getImagenUrl());
+            cantidad.setText(String.valueOf(producto.getCantidad())); // Mostrar cantidad del producto
 
             eliminar.setOnClickListener(v -> {
                 carrito.remove(producto);
                 carritoAdapter.updateData(carrito);
+                calcularSubTotal();
+                calcularImpuestoIVA();
                 calcularTotal();
             });
+
+            increment.setOnClickListener(v -> {
+                producto.setCantidad(producto.getCantidad() + 1);
+                cantidad.setText(String.valueOf(producto.getCantidad()));
+                calcularSubTotal();
+                calcularImpuestoIVA();
+                calcularTotal();
+            });
+
+            decrement.setOnClickListener(v -> {
+                if (producto.getCantidad() > 1) {
+                    producto.setCantidad(producto.getCantidad() - 1);
+                    cantidad.setText(String.valueOf(producto.getCantidad()));
+                    calcularSubTotal();
+                    calcularImpuestoIVA();
+                    calcularTotal();
+                } else {
+                    Toast.makeText(Carrito.this, "La cantidad no puede ser menor a 1", Toast.LENGTH_SHORT).show();
+                }
+            });
+
         });
 
         recyclerCarrito.setAdapter(carritoAdapter);
+        calcularSubTotal();
+        calcularImpuestoIVA();
         calcularTotal();
     }
 
-    private void calcularTotal() {
-        double total = 0;
+    private void calcularSubTotal(){
+        double subtotal = 0;
         for (Producto p : carrito) {
-            total += p.getPrecio();
+            subtotal += p.getPrecioTotal();
         }
-        txtTotal.setText("$" + String.format("%.2f", total));
+        txtSubtotal.setText("$" + String.format("%.2f", subtotal));
+    }
+
+    private void calcularImpuestoIVA() {
+        double tasaIVA = 0.13;
+        double totalIVA = 0.0;
+
+        for (Producto p : carrito) {
+            double ivaProducto = p.getPrecioTotal() * tasaIVA;
+            totalIVA += ivaProducto;
+        }
+
+        txtImpuesto.setText("$" + String.format("%.2f", totalIVA));
+    }
+
+    private void calcularTotal() {
+        double subtotal = 0.0;
+        double totalIVA = 0.0;
+        double tasaIVA = 0.13;
+
+        for (Producto p : carrito) {
+            double precioTotal = p.getPrecioTotal();
+            subtotal += precioTotal;
+            totalIVA += precioTotal * tasaIVA;
+        }
+
+        double totalFinal = subtotal + totalIVA;
+
+        txtTotal.setText("$" + String.format("%.2f", totalFinal));
     }
 }

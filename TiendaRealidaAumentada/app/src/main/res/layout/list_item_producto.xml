@@ -2,17 +2,18 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="180dp"
-    android:layout_margin="5dp"
-    android:layout_height="280dp"
-    android:background="@drawable/bg_categorias">
+    android:layout_width="405dp"
+    android:layout_margin="1dp"
+    android:layout_height="150dp"
+   >
 
     <ImageView
         android:id="@+id/imageView"
-        android:layout_width="112dp"
-        android:layout_height="99dp"
-        android:layout_marginTop="20dp"
+        android:layout_width="88dp"
+        android:layout_height="82dp"
+        android:layout_marginTop="16dp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.054"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:srcCompat="@tools:sample/avatars" />
@@ -21,42 +22,49 @@
         android:id="@+id/txtPrecioProducto"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:layout_marginStart="12dp"
+        android:layout_marginTop="1dp"
+        android:layout_marginEnd="248dp"
         android:text="Precio"
+        android:textColor="#4B6D97"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.242"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/imageView"
         app:layout_constraintTop_toBottomOf="@+id/txtNombreProducto" />
 
     <TextView
         android:id="@+id/txtNombreProducto"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
+        android:layout_width="125dp"
+        android:layout_height="17dp"
+        android:layout_marginStart="11dp"
+        android:layout_marginTop="28dp"
         android:text="nombre"
         android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.259"
+        app:layout_constraintStart_toEndOf="@+id/imageView"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/btnAgregarCarrito"
+        android:layout_width="118dp"
+        android:layout_height="39dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:backgroundTint="#3B78E4"
+        android:text="Agregar"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageView" />
 
     <Button
-        android:id="@+id/btnAgregarCarrito"
-        android:layout_width="101dp"
-        android:layout_height="42dp"
-        android:layout_marginTop="180dp"
-        android:layout_marginEnd="40dp"
-        android:text="Agregar"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <Button
         android:id="@+id/btnVerEnAR"
-        android:layout_width="100dp"
-        android:layout_height="41dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="40dp"
+        android:layout_width="117dp"
+        android:layout_height="38dp"
+        android:layout_marginStart="138dp"
+        android:layout_marginTop="106dp"
+        android:layout_marginEnd="16dp"
         android:text="Ver AR"
+        android:textColor="#03050E"
+        android:backgroundTint="#E7EDF3"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnAgregarCarrito" />
+        app:layout_constraintStart_toEndOf="@+id/btnAgregarCarrito"
+        app:layout_constraintTop_toTopOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

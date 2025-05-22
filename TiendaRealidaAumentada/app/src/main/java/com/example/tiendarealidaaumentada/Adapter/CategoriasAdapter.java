@@ -14,23 +14,33 @@ import java.util.ArrayList;
 
 public class CategoriasAdapter extends RecyclerView.Adapter<CategoriasAdapter.CategoriaViewHolder> {
     private ArrayList<String> categorias;
+    private OnCategoriaClickListener listener;
 
-    public CategoriasAdapter(ArrayList<String> categorias) {
+    public interface OnCategoriaClickListener {
+        void onCategoriaClick(String categoria);
+    }
+
+    public CategoriasAdapter(ArrayList<String> categorias, OnCategoriaClickListener listener) {
         this.categorias = categorias;
+        this.listener = listener;
     }
 
     @NonNull
     @Override
-    public CategoriasAdapter.CategoriaViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public CategoriaViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item_categoria, parent, false);
         return new CategoriaViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull CategoriasAdapter.CategoriaViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull CategoriaViewHolder holder, int position) {
         String categoria = categorias.get(position);
-        TextView textViewCategoria = holder.itemView.findViewById(R.id.txtCategoria);
-        textViewCategoria.setText(categoria);
+        holder.textViewCategoria.setText(categoria);
+        holder.itemView.setOnClickListener(v -> {
+            if (listener != null) {
+                listener.onCategoriaClick(categoria);
+            }
+        });
     }
 
     @Override
@@ -39,9 +49,12 @@ public class CategoriasAdapter extends RecyclerView.Adapter<CategoriasAdapter.Ca
     }
 
     public class CategoriaViewHolder extends RecyclerView.ViewHolder {
+        TextView textViewCategoria;
+
         public CategoriaViewHolder(@NonNull View itemView) {
             super(itemView);
-            TextView textViewCategoria = itemView.findViewById(R.id.txtCategoria);
+            textViewCategoria = itemView.findViewById(R.id.txtCategoria);
         }
     }
 }
+
