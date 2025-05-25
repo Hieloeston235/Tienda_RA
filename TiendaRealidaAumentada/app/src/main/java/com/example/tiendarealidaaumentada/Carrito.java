@@ -2,6 +2,7 @@ package com.example.tiendarealidaaumentada;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -39,13 +40,15 @@ public class Carrito extends AppCompatActivity {
     private RecyclerView recyclerCarrito;
     private GenericAdapter<Producto> carritoAdapter;
     private ArrayList<Producto> carrito;
-    private TextView txtTotal,txtSubtotal, txtImpuesto;
+    private TextView txtTotal, txtSubtotal, txtImpuesto;
     private Button btnComprar;
+
     private BottomNavigationView bottomNavigationView;
 
     // Firebase
     private FirebaseAuth mAuth;
     private DatabaseReference mDatabase;
+    private String userId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,14 +56,14 @@ public class Carrito extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_carrito);
 
-        mAuth = FirebaseAuth.getInstance();
-        mDatabase = FirebaseDatabase.getInstance().getReference();
+        initializeFirebase();
 
         recyclerCarrito = findViewById(R.id.recyclerCarrito);
         txtTotal = findViewById(R.id.txtTotal);
         txtSubtotal = findViewById(R.id.txtSubtotal);
         txtImpuesto = findViewById(R.id.txtImpuestos);
         btnComprar = findViewById(R.id.btnComprar);
+
         bottomNavigationView = findViewById(R.id.bottomNavigationView);
         bottomNavigationView.setSelectedItemId(R.id.itemCarrito);
 
@@ -79,9 +82,9 @@ public class Carrito extends AppCompatActivity {
             TextView decrement = holder.itemView.findViewById(R.id.textButtom_decrement);
 
             nombre.setText(producto.getNombre());
-            precio.setText("$" + String.format("%.2f", producto.getPrecio())); // Mostrar precio unitario
+            precio.setText("$" + String.format("%.2f", producto.getPrecio()));
             imagen.setImageResource(producto.getImagenUrl());
-            cantidad.setText(String.valueOf(producto.getCantidad())); // Mostrar cantidad del producto
+            cantidad.setText(String.valueOf(producto.getCantidad()));
 
             eliminar.setOnClickListener(v -> {
                 carrito.remove(producto);
@@ -89,6 +92,8 @@ public class Carrito extends AppCompatActivity {
                 calcularSubTotal();
                 calcularImpuestoIVA();
                 calcularTotal();
+                // Actualizar Firebase
+                actualizarCarritoEnFirebase();
             });
 
             increment.setOnClickListener(v -> {
@@ -97,6 +102,8 @@ public class Carrito extends AppCompatActivity {
                 calcularSubTotal();
                 calcularImpuestoIVA();
                 calcularTotal();
+                // Actualizar Firebase
+                actualizarCarritoEnFirebase();
             });
 
             decrement.setOnClickListener(v -> {
@@ -106,11 +113,12 @@ public class Carrito extends AppCompatActivity {
                     calcularSubTotal();
                     calcularImpuestoIVA();
                     calcularTotal();
+                    // Actualizar Firebase
+                    actualizarCarritoEnFirebase();
                 } else {
                     Toast.makeText(Carrito.this, "La cantidad no puede ser menor a 1", Toast.LENGTH_SHORT).show();
                 }
             });
-
         });
 
         recyclerCarrito.setAdapter(carritoAdapter);
@@ -137,12 +145,53 @@ public class Carrito extends AppCompatActivity {
                 return false;
             }
         });
+
     }
 
-    private void calcularSubTotal(){
+    private void initializeFirebase() {
+        mAuth = FirebaseAuth.getInstance();
+        mDatabase = FirebaseDatabase.getInstance().getReference();
+
+        if (mAuth.getCurrentUser() != null) {
+            userId = mAuth.getCurrentUser().getUid();
+        }
+    }
+
+    private void actualizarCarritoEnFirebase() {
+        if (userId == null) return;
+
+        if (carrito.isEmpty()) {
+            // Si el carrito está vacío, eliminar de Firebase
+            mDatabase.child("carritos").child(userId)
+                    .removeValue()
+                    .addOnFailureListener(e -> {
+                        Log.e("Carrito", "Error al limpiar carrito: " + e.getMessage());
+                    });
+        } else {
+            // Actualizar carrito en Firebase
+            List<Map<String, Object>> productosCarrito = new ArrayList<>();
+            for (Producto producto : carrito) {
+                Map<String, Object> productoData = new HashMap<>();
+                productoData.put("nombre", producto.getNombre());
+                productoData.put("precio", producto.getPrecio());
+                productoData.put("cantidad", producto.getCantidad());
+                productoData.put("imagenUrl", producto.getImagenUrl());
+                productoData.put("categoria", producto.getCategoria());
+                productosCarrito.add(productoData);
+            }
+
+            mDatabase.child("carritos").child(userId).child("productos")
+                    .setValue(productosCarrito)
+                    .addOnFailureListener(e -> {
+                        Log.e("Carrito", "Error al actualizar carrito: " + e.getMessage());
+                    });
+        }
+    }
+
+    private void calcularSubTotal() {
         double subtotal = 0;
         for (Producto p : carrito) {
-            subtotal += p.getPrecioTotal(); // Usar precio total (precio * cantidad)
+            subtotal += p.getPrecioTotal();
         }
         txtSubtotal.setText("$" + String.format("%.2f", subtotal));
     }
@@ -152,7 +201,7 @@ public class Carrito extends AppCompatActivity {
         double totalIVA = 0.0;
 
         for (Producto p : carrito) {
-            double ivaProducto = p.getPrecioTotal() * tasaIVA; // Aplicar IVA al precio total
+            double ivaProducto = p.getPrecioTotal() * tasaIVA;
             totalIVA += ivaProducto;
         }
 
@@ -171,7 +220,6 @@ public class Carrito extends AppCompatActivity {
         }
 
         double totalFinal = subtotal + totalIVA;
-
         txtTotal.setText("$" + String.format("%.2f", totalFinal));
     }
 
@@ -204,27 +252,22 @@ public class Carrito extends AppCompatActivity {
             return;
         }
 
-        // Crear un ID único para la compra basado en timestamp
         String compraId = String.valueOf(System.currentTimeMillis());
-        String userId = user.getUid(); // Usar UID en lugar de email para mayor seguridad
+        String userId = user.getUid();
 
-        // Obtener fecha y hora actual
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
         String fechaHora = sdf.format(new Date());
 
-        // Calcular total
         double total = 0.0;
         double tasaIVA = 0.13;
         for (Producto p : carrito) {
             total += p.getPrecioTotal() * (1 + tasaIVA);
         }
 
-        // Crear objeto de compra
         Map<String, Object> compra = new HashMap<>();
         compra.put("fecha", fechaHora);
         compra.put("total", total);
 
-        // Crear lista de productos
         List<Map<String, Object>> productosCompra = new ArrayList<>();
         for (Producto producto : carrito) {
             Map<String, Object> productoData = new HashMap<>();
@@ -235,15 +278,30 @@ public class Carrito extends AppCompatActivity {
         }
         compra.put("productos", productosCompra);
 
-        // Guardar en Firebase
         mDatabase.child("compras").child(userId).child(compraId)
                 .setValue(compra)
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
+                        // Limpiar carrito de Firebase después de compra exitosa
+                        limpiarCarritoDeFirebase();
                         mostrarDialogoExito();
                     } else {
                         Toast.makeText(Carrito.this, "Error al guardar la compra: " +
                                 task.getException().getMessage(), Toast.LENGTH_LONG).show();
+                    }
+                });
+    }
+
+    private void limpiarCarritoDeFirebase() {
+        if (userId == null) return;
+
+        mDatabase.child("carritos").child(userId)
+                .removeValue()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        Log.d("Carrito", "Carrito limpiado en Firebase después de compra");
+                    } else {
+                        Log.e("Carrito", "Error al limpiar carrito: " + task.getException().getMessage());
                     }
                 });
     }
@@ -255,7 +313,7 @@ public class Carrito extends AppCompatActivity {
         builder.setCancelable(false);
 
         builder.setPositiveButton("Aceptar", (dialog, which) -> {
-            // Limpiar carrito
+            // Limpiar carrito local
             carrito.clear();
             carritoAdapter.updateData(carrito);
 
@@ -274,5 +332,4 @@ public class Carrito extends AppCompatActivity {
         AlertDialog dialog = builder.create();
         dialog.show();
     }
-
 }
