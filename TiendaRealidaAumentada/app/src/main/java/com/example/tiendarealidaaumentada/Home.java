@@ -19,6 +19,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.tiendarealidaaumentada.Adapter.CategoriasAdapter;
 import com.example.tiendarealidaaumentada.Adapter.GenericAdapter;
 import com.example.tiendarealidaaumentada.models.Producto;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,6 +38,7 @@ public class Home extends AppCompatActivity {
     private GenericAdapter<Producto> adapter;
     private ArrayList<Producto> productos = new ArrayList<>();
     private ArrayList<Producto> carrito = new ArrayList<>();
+    private BottomNavigationView bottomNavigationView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,8 +54,8 @@ public class Home extends AppCompatActivity {
         recyclerViewProductos = findViewById(R.id.recyclerProductos);
 
         btnVerCarrito = findViewById(R.id.btnCarrito);
-
-
+        bottomNavigationView = findViewById(R.id.bottomNavigationView);
+        bottomNavigationView.setSelectedItemId(R.id.itemHome);
 
         categorias.add("Categoria 1");
         categorias.add("Categoria 2");
@@ -102,6 +104,27 @@ public class Home extends AppCompatActivity {
             Intent intent = new Intent(Home.this, Carrito.class);
             intent.putParcelableArrayListExtra("carrito", carrito);
             startActivity(intent);
+        });
+
+        bottomNavigationView.setOnItemSelectedListener(item -> {
+            int itemId = item.getItemId();
+
+            if (itemId == R.id.itemHome) {
+                /*Intent intent = new Intent(Home.this, Home.class);
+                startActivity(intent);*/
+                return true;
+            } else if (itemId == R.id.itemCarrito) {
+                Intent intent = new Intent(Home.this, Carrito.class);
+                startActivity(intent);
+                return true;
+            } else if (itemId == R.id.itemHistorial) {
+                Intent intent = new Intent(Home.this, HistorialCompra.class);
+                startActivity(intent);
+                return true;
+            }else{
+                return false;
+            }
+
         });
 
     }

@@ -35,10 +35,10 @@ public class MainActivity extends AppCompatActivity {
     private EditText editTextPassword;
     private Button btnIniciarSesion;
     private Button btnRegistrarse;
-    private SignInButton btnGoogleSignIn;
+    //private SignInButton btnGoogleSignIn;
 
     private FirebaseAuth mAuth;
-    private GoogleSignInClient mGoogleSignInClient;
+    //private GoogleSignInClient mGoogleSignInClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,19 +60,19 @@ public class MainActivity extends AppCompatActivity {
                 .requestEmail()
                 .build();
 
-        mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
+        //mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
 
         // Inicializar vistas
         editTextEmailAddress = findViewById(R.id.editTextEmailAddress);
         editTextPassword = findViewById(R.id.editTextPassword);
         btnIniciarSesion = findViewById(R.id.btnIniciarSesion);
         btnRegistrarse = findViewById(R.id.btnRegistrarse);
-        btnGoogleSignIn = findViewById(R.id.btnGoogleSignIn);
+        //btnGoogleSignIn = findViewById(R.id.btnGoogleSignIn);
 
         // Listeners de los botones
         btnIniciarSesion.setOnClickListener(v -> signInWithEmailPassword());
         btnRegistrarse.setOnClickListener(v -> createUserWithEmailPassword());
-        btnGoogleSignIn.setOnClickListener(v -> signInWithGoogle());
+        //btnGoogleSignIn.setOnClickListener(v -> signInWithGoogle());
     }
 
     @Override
@@ -141,10 +141,10 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void signInWithGoogle() {
+    /*private void signInWithGoogle() {
         Intent signInIntent = mGoogleSignInClient.getSignInIntent();
         startActivityForResult(signInIntent, RC_SIGN_IN);
-    }
+    }*/
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
