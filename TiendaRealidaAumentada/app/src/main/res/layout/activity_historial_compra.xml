@@ -22,8 +22,8 @@
 
     <SearchView
         android:id="@+id/searchView"
-        android:layout_width="412dp"
-        android:layout_height="56dp"
+        android:layout_width="386dp"
+        android:layout_height="51dp"
         android:layout_marginTop="25dp"
         android:background="@drawable/bg_search"
         android:queryHint="Buscar"
@@ -34,8 +34,8 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerHistorial"
-        android:layout_width="420dp"
-        android:layout_height="628dp"
+        android:layout_width="match_parent"
+        android:layout_height="492dp"
         android:layout_marginTop="15dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -43,7 +43,7 @@
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNavigationView"
-        android:layout_width="421dp"
+        android:layout_width="match_parent"
         android:layout_height="112dp"
         android:layout_marginTop="76dp"
         app:layout_constraintBottom_toBottomOf="parent"

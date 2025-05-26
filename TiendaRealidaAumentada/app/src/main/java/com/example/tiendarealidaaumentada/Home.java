@@ -43,7 +43,7 @@ public class Home extends AppCompatActivity {
     private Producto producto;
     private TextView textViewNombre;
     private TextView textViewPrecio;
-    private Button btnAgregarCarrito, btnVerAR, btnVerCarrito;
+    private Button btnAgregarCarrito, btnVerAR;
     private ImageView imageViewProducto;
     private GenericAdapter<Producto> adapter;
     private ArrayList<Producto> productos = new ArrayList<>();
@@ -72,7 +72,6 @@ public class Home extends AppCompatActivity {
         recyclerViewCategoria = findViewById(R.id.recyclerCategorias);
         recyclerViewProductos = findViewById(R.id.recyclerProductos);
 
-        btnVerCarrito = findViewById(R.id.btnCarrito);
         bottomNavigationView = findViewById(R.id.bottomNavigationView);
         bottomNavigationView.setSelectedItemId(R.id.itemHome);
 
@@ -124,11 +123,6 @@ public class Home extends AppCompatActivity {
 
         adapter.updateData(productos);
 
-        btnVerCarrito.setOnClickListener(v -> {
-            Intent intent = new Intent(Home.this, Carrito.class);
-            intent.putParcelableArrayListExtra("carrito", carrito);
-            startActivity(intent);
-        });
 
         bottomNavigationView.setOnItemSelectedListener(item -> {
             int itemId = item.getItemId();
