@@ -106,6 +106,12 @@ public class Home extends AppCompatActivity {
             });
 
             btnVerAR = holder.itemView.findViewById(R.id.btnVerEnAR);
+            btnVerAR.setOnClickListener(v -> {
+                Intent intentAr = new Intent(Home.this, ArActivity.class);
+                //intent.putExtra("producto", producto);
+                startActivity(intentAr);
+            });
+
             imageViewProducto = holder.itemView.findViewById(R.id.imageView);
             imageViewProducto.setImageResource(producto.getImagenUrl());
         });

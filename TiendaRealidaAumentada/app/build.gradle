@@ -9,7 +9,7 @@ android {
 
     defaultConfig {
         applicationId "com.example.tiendarealidaaumentada"
-        minSdk 34
+        minSdk 26
         targetSdk 35
         versionCode 1
         versionName "1.0"
@@ -40,7 +40,37 @@ dependencies {
     implementation 'com.google.firebase:firebase-auth'
     implementation 'com.google.android.gms:play-services-auth:21.1.1'
     implementation libs.firebase.database
+    implementation libs.core
+    implementation libs.assets
     testImplementation libs.junit
     androidTestImplementation libs.ext.junit
     androidTestImplementation libs.espresso.core
+
+    implementation('com.google.ar:core:1.47.0') {
+        exclude group: 'com.google.ar.sceneform'
+        exclude module: 'core'
+        exclude module: 'sceneform-base'
+        exclude module: 'rendering'
+        exclude module: 'sceneform-ux'
+        exclude module: 'sceneform-utils'
+        exclude module: 'sceneform-utils-android'
+        exclude module: 'sceneform-ux-android'
+    }
+
+    // Usar solo Sceneform de Thomas Gorisse (fork mantenido)
+    implementation("com.gorisse.thomas.sceneform:sceneform:1.21.0") {
+        exclude group: 'com.google.ar.sceneform'
+        exclude module: 'core'
+        exclude module: 'sceneform-base'
+        exclude module: 'rendering'
+        exclude module: 'sceneform-ux'
+        exclude module: 'sceneform-utils'
+        exclude module: 'sceneform-utils-android'
+        exclude module: 'sceneform-ux-android'
+    }
+
+
+
+    implementation 'androidx.lifecycle:lifecycle-common-java8:2.7.0'
+    implementation 'androidx.lifecycle:lifecycle-runtime:2.7.0'
 }
