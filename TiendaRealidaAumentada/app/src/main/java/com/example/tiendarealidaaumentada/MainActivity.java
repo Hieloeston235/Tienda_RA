@@ -71,7 +71,7 @@ public class MainActivity extends AppCompatActivity {
 
         // Listeners de los botones
         btnIniciarSesion.setOnClickListener(v -> signInWithEmailPassword());
-        btnRegistrarse.setOnClickListener(v -> createUserWithEmailPassword());
+        btnRegistrarse.setOnClickListener(v -> registerInit());
         //btnGoogleSignIn.setOnClickListener(v -> signInWithGoogle());
     }
 
@@ -207,5 +207,9 @@ public class MainActivity extends AppCompatActivity {
             // El usuario no ha iniciado sesión
             // Puedes mostrar un mensaje o actualizar la interfaz de usuario en consecuencia
         }
+    }
+    private void registerInit(){
+        Intent intent = new Intent(MainActivity.this, register.class);
+        startActivity(intent);
     }
 }
