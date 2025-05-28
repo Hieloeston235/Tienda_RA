@@ -244,7 +244,7 @@ public class Home extends AppCompatActivity {
 
     private void CargarCategoria(CategoriaCallback callback){
         mDatabase.child("categorias")
-                .addValueEventListener(new ValueEventListener() {
+                .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
 
@@ -414,7 +414,7 @@ public class Home extends AppCompatActivity {
     }
     private void CargaProducto(ProductoCallback callback){
         mDatabase.child("productos").
-                addValueEventListener(new ValueEventListener() {
+                addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         if (!snapshot.exists() || snapshot.hasChildren() ){
