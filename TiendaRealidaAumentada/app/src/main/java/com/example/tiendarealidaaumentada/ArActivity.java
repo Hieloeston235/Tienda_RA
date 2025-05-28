@@ -67,7 +67,7 @@ public class ArActivity extends AppCompatActivity {
         // Cargar el modelo ToyCar.glb desde assets
         ModelRenderable.builder()
                 .setSource(this, RenderableSource.builder()
-                        .setSource(this, Uri.parse("file:///android_asset/models/Duck.glb"), RenderableSource.SourceType.GLB)
+                        .setSource(this, Uri.parse("file:///android_asset/models/rifleasalto.glb"), RenderableSource.SourceType.GLB)
                         .setScale(0.5f) // Escala del modelo
                         .setRecenterMode(RenderableSource.RecenterMode.ROOT)
                         .build())

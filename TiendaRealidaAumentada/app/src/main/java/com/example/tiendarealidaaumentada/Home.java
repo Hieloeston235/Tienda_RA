@@ -33,9 +33,12 @@ import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
 
 import java.lang.reflect.Array;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -87,42 +90,8 @@ public class Home extends AppCompatActivity {
 
 
         inicializarCategoria();
-        Log.e("Home-D-CargarCategoria" , "Lista de categorias cargadas:  " + categorias);
+        inicializarProducto();
 
-
-
-        adapter = new GenericAdapter<>(new ArrayList<>(), R.layout.list_item_producto, (holder, producto) -> {
-            textViewNombre = holder.itemView.findViewById(R.id.txtNombreProducto);
-            textViewNombre.setText(producto.getNombre());
-
-            textViewPrecio = holder.itemView.findViewById(R.id.txtPrecioProducto);
-            textViewPrecio.setText(String.valueOf(producto.getPrecio()));
-
-            btnAgregarCarrito = holder.itemView.findViewById(R.id.btnAgregarCarrito);
-            btnAgregarCarrito.setOnClickListener(v -> {
-                agregarProductoAlCarrito(producto);
-            });
-
-            btnVerAR = holder.itemView.findViewById(R.id.btnVerEnAR);
-            btnVerAR.setOnClickListener(v -> {
-                Intent intentAr = new Intent(Home.this, ArActivity.class);
-                //intent.putExtra("producto", producto);
-                startActivity(intentAr);
-            });
-
-            imageViewProducto = holder.itemView.findViewById(R.id.imageView);
-            imageViewProducto.setImageResource(producto.getImagenUrl());
-        });
-
-        productos.add(new Producto("Motherboard", 10.99, R.drawable.motherboard, "Otros"));
-        productos.add(new Producto("Teclado", 15.99, R.drawable.teclado, "Electronica"));
-
-        recyclerViewProductos.setLayoutManager(new LinearLayoutManager(this));
-        recyclerViewProductos.setAdapter(adapter);
-
-
-
-        adapter.updateData(productos);
 
 
         bottomNavigationView.setOnItemSelectedListener(item -> {
@@ -299,17 +268,21 @@ public class Home extends AppCompatActivity {
 
     private void crearCategoria(CategoriaCallback callback) {
         List<String> CategoriasIniciales = new ArrayList<>();
-        CategoriasIniciales.add("Fantasia");
+        CategoriasIniciales.add("Armas");
         CategoriasIniciales.add("Electronica");
-        CategoriasIniciales.add("Bebida");
-        CategoriasIniciales.add("WH40k");
+        CategoriasIniciales.add("Arquitectura");
+        CategoriasIniciales.add("Carro y vehiculo");
         CategoriasIniciales.add("Otros");
 
         AtomicInteger contador = new AtomicInteger(0);
         int totalCategorias = CategoriasIniciales.size();
+
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
+        String fechaHora = sdf.format(new Date());
+
         for (String nombreCategoria : CategoriasIniciales){
             Map<String, Object> categoriaInicial = new HashMap<>();
-            categoriaInicial.put("created_at", ServerValue.TIMESTAMP);
+            categoriaInicial.put("created_at", fechaHora);
             categoriaInicial.put("name", nombreCategoria);
             categoriaInicial.put("active", true);
 
@@ -345,7 +318,6 @@ public class Home extends AppCompatActivity {
 
                         if (!categorias.contains(nombreCategoria)) {
                             categorias.add(nombreCategoria);
-                            System.out.println(nombreCategoria);
                         }
                     }
 
@@ -386,7 +358,7 @@ public class Home extends AppCompatActivity {
                     }
                     adapter.updateData(productosFiltrados);
                 });
-                Log.e("Home", "onCategoriasLista:  se creo/obtuvo categoria exitosamente" );
+                Log.d("Home", "onCategoriasLista:  se creo/obtuvo categoria exitosamente" );
                 recyclerViewCategoria.setAdapter(categoriasAdapter);
             }
 
@@ -396,13 +368,56 @@ public class Home extends AppCompatActivity {
             }
         });
 
+
+    }
+
+    private void inicializarProducto(){
+        CargaProducto(new ProductoCallback() {
+            @Override
+            public void onProductoArray(ArrayList<Producto> productoArrayLis) {
+                recyclerViewProductos.setLayoutManager(new LinearLayoutManager(Home.this));
+
+                adapter = new GenericAdapter<>(new ArrayList<>(), R.layout.list_item_producto, (holder, producto) -> {
+                    textViewNombre = holder.itemView.findViewById(R.id.txtNombreProducto);
+                    textViewNombre.setText(producto.getNombre());
+
+                    textViewPrecio = holder.itemView.findViewById(R.id.txtPrecioProducto);
+                    textViewPrecio.setText(String.valueOf(producto.getPrecio()));
+
+                    btnAgregarCarrito = holder.itemView.findViewById(R.id.btnAgregarCarrito);
+                    btnAgregarCarrito.setOnClickListener(v -> {
+                        agregarProductoAlCarrito(producto);
+                    });
+
+                    btnVerAR = holder.itemView.findViewById(R.id.btnVerEnAR);
+                    btnVerAR.setOnClickListener(v -> {
+                        Intent intentAr = new Intent(Home.this, ArActivity.class);
+                        //intent.putExtra("producto", producto);
+                        startActivity(intentAr);
+                    });
+
+                    imageViewProducto = holder.itemView.findViewById(R.id.imageView);
+                    imageViewProducto.setImageResource(producto.getImagenUrl());
+                });
+
+
+
+                recyclerViewProductos.setAdapter(adapter);
+                adapter.updateData(productoArrayLis);
+            }
+
+            @Override
+            public void onError(String Error) {
+                Log.e("Home-Cargar-productos", "onError: error al crear/obtener productos" );
+            }
+        });
     }
     private void CargaProducto(ProductoCallback callback){
-        mDatabase.child("Productos").
+        mDatabase.child("productos").
                 addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        if (!snapshot.exists() && snapshot.hasChildren() ){
+                        if (!snapshot.exists() || snapshot.hasChildren() ){
                             crearProducto(callback);
                         }else  {
                             traerProducto(snapshot);
@@ -411,7 +426,8 @@ public class Home extends AppCompatActivity {
 
                     @Override
                     public void onCancelled(@NonNull DatabaseError error) {
-
+                        callback.onError("Error al verificar productos " + error.getMessage());
+                        Log.e("Home-cargaProducto", error.getMessage());
                     }
                 });
     }
@@ -421,22 +437,20 @@ public class Home extends AppCompatActivity {
             if (snapshot.exists() && snapshot.hasChildren()) {
                 for (DataSnapshot productoSnapshot : snapshot.getChildren()) {
 
-                    String nombreCategoria = productoSnapshot.child("name").getValue(String.class);
-                    Boolean activa = productoSnapshot.child("active").getValue(Boolean.class);
+                    Producto producto = productoSnapshot.child("producto").getValue(Producto.class);
+
 
                     // Solo agregar categorías activas
-                    if (nombreCategoria != null && !nombreCategoria.isEmpty() &&
-                            (activa == null || activa)) { // Si activa es null, asumimos true
+                    if (producto != null ) { // Si activa es null, asumimos true
 
-                        if (!productos.contains(nombreCategoria)) {
-                            categorias.add(nombreCategoria);
-                            System.out.println(nombreCategoria);
+                        if (!productos.contains(producto)) {
+                            productos.add(producto);
+                            System.out.println(producto.getNombre());
                         }
                     }
 
 
-                    Log.d("Home", "Categoría encontrada: " + nombreCategoria +
-                            ", Activa: " + activa +
+                    Log.d("Home", "Producto encontrado: " + producto.getNombre() +
                             ", Key: " + productoSnapshot.getKey());
                 }
             }
@@ -447,7 +461,61 @@ public class Home extends AppCompatActivity {
     }
 
     private void crearProducto(ProductoCallback callback) {
+        ArrayList<Producto> ProductosIniciales = new ArrayList<>();
+        ProductosIniciales.add(new Producto("Camara", 40.99, R.drawable.camera, "Electronica"));
+        ProductosIniciales.add(new Producto("Premier Ball", 103.99, R.drawable.premierball, "Electronica"));
+        ProductosIniciales.add(new Producto("Lapto Cyber Punk", 1000.99, R.drawable.laptosciberpunk, "Electronica"));
+        ProductosIniciales.add(new Producto("HQD Ultima Pro Max 15000", 899.99, R.drawable.hqdultimapromax15000, "Electronica"));
+        ProductosIniciales.add(new Producto("hello tv", 500.99, R.drawable.hellotv, "Electronica"));
 
+        ProductosIniciales.add(new Producto("Rifle de asalto", 1.99, R.drawable.rifleasalto, "Armas"));
+        ProductosIniciales.add(new Producto("Pistola ", 1.99, R.drawable.desearteagle, "Armas"));
+        ProductosIniciales.add(new Producto("Bomba C4", 10.99, R.drawable.bombac4, "Armas"));
+        ProductosIniciales.add(new Producto("Taser", 10.99, R.drawable.taser, "Armas"));
+        ProductosIniciales.add(new Producto("Martillo", 10.99, R.drawable.martillo, "Armas"));
+
+        ProductosIniciales.add(new Producto("Motherboard", 10.99, R.drawable.motherboard, "Arquitectura"));
+        ProductosIniciales.add(new Producto("Motherboard", 10.99, R.drawable.motherboard, "Arquitectura"));
+        ProductosIniciales.add(new Producto("Motherboard", 10.99, R.drawable.motherboard, "Arquitectura"));
+        ProductosIniciales.add(new Producto("Motherboard", 10.99, R.drawable.motherboard, "Arquitectura"));
+        ProductosIniciales.add(new Producto("Motherboard", 10.99, R.drawable.motherboard, "Arquitectura"));
+
+        ProductosIniciales.add(new Producto("Motherboard", 10.99, R.drawable.motherboard, "Carro y Vehiculo"));
+        ProductosIniciales.add(new Producto("Motherboard", 10.99, R.drawable.motherboard, "Carro y Vehiculo"));
+        ProductosIniciales.add(new Producto("Motherboard", 10.99, R.drawable.motherboard, "Carro y Vehiculo"));
+        ProductosIniciales.add(new Producto("Motherboard", 10.99, R.drawable.motherboard, "Carro y Vehiculo"));
+        ProductosIniciales.add(new Producto("Motherboard", 10.99, R.drawable.motherboard, "Carro y Vehiculo"));
+
+        
+
+        AtomicInteger contador = new AtomicInteger(0);
+        int totalProducto = ProductosIniciales.size();
+
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
+        String fechaHora = sdf.format(new Date());
+
+        for (Producto nombreCategoria : ProductosIniciales){
+            Map<String, Object> productoInicial = new HashMap<>();
+            productoInicial.put("created_at", fechaHora);
+            productoInicial.put("producto", nombreCategoria);
+            productoInicial.put("active", true);
+
+            mDatabase.child("productos").child(nombreCategoria.getNombre())
+                    .setValue(productoInicial)
+                    .addOnSuccessListener(aVoid -> {
+                        Log.d("Home", "Producto '" + nombreCategoria.getNombre() + "' creada exitosamente");
+
+                        productos.add(nombreCategoria);
+                        if (contador.incrementAndGet() == totalProducto){
+                            callback.onProductoArray(productos);
+                        }
+                    })
+                    .addOnFailureListener(e -> {
+                        Log.e("Home", "Error al crear producto '" + nombreCategoria.getNombre() + "': " + e.getMessage());
+                        callback.onError("Error al crear producto "+ e.getMessage());
+                    });
+
+        }
     }
 
 }
