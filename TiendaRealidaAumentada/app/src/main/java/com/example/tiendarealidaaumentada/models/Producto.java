@@ -11,12 +11,35 @@ public class Producto implements Parcelable {
     private int imagenUrl;
     private String Categoria;
     private int cantidad;
+    private String ModeloString;
+    private double Escala;
+
+    public String getModeloString() {
+        return ModeloString;
+    }
+
+    public void setModeloString(String modeloString) {
+        ModeloString = modeloString;
+    }
+
     public Producto(String nombre, double precio, int imagenUrl, String Categoria) {
         this.nombre = nombre;
         this.precio = precio;
         this.imagenUrl = imagenUrl;
         this.Categoria = Categoria;
         this.cantidad = 1;
+    }
+
+    public Producto(String nombre, double precio, int imagenUrl, String categoria, String modeloString, int cantidad) {
+        this.nombre = nombre;
+        this.precio = precio;
+        this.imagenUrl = imagenUrl;
+        Categoria = categoria;
+        this.cantidad = cantidad;
+        ModeloString = modeloString;
+    }
+    public Producto(String nombre, double precio, int imagenUrl, String categoria, String modeloString){
+        this(nombre,precio,imagenUrl,categoria,modeloString,1);
     }
 
     public Producto() {

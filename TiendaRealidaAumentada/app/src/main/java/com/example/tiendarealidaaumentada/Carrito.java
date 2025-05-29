@@ -10,6 +10,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -20,6 +21,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import android.app.AlertDialog;
@@ -32,6 +35,7 @@ import java.util.Map;
 
 import com.example.tiendarealidaaumentada.Adapter.GenericAdapter;
 import com.example.tiendarealidaaumentada.models.Producto;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
@@ -58,6 +62,8 @@ public class Carrito extends AppCompatActivity {
 
         initializeFirebase();
 
+        carrito = new ArrayList<>();
+
         recyclerCarrito = findViewById(R.id.recyclerCarrito);
         txtTotal = findViewById(R.id.txtTotal);
         txtSubtotal = findViewById(R.id.txtSubtotal);
@@ -67,11 +73,7 @@ public class Carrito extends AppCompatActivity {
         bottomNavigationView = findViewById(R.id.bottomNavigationView);
         bottomNavigationView.setSelectedItemId(R.id.itemCarrito);
 
-        carrito = getIntent().getParcelableArrayListExtra("carrito");
-        if (carrito == null) carrito = new ArrayList<>();
-
-        recyclerCarrito.setLayoutManager(new LinearLayoutManager(this));
-
+        recyclerCarrito.setLayoutManager(new LinearLayoutManager(Carrito.this));
         carritoAdapter = new GenericAdapter<>(carrito, R.layout.list_item_carrito, (holder, producto) -> {
             TextView nombre = holder.itemView.findViewById(R.id.txtNomreCarritoProducto);
             TextView precio = holder.itemView.findViewById(R.id.txtPrecioCarritoProducto);
@@ -92,7 +94,6 @@ public class Carrito extends AppCompatActivity {
                 calcularSubTotal();
                 calcularImpuestoIVA();
                 calcularTotal();
-                // Actualizar Firebase
                 actualizarCarritoEnFirebase();
             });
 
@@ -102,7 +103,6 @@ public class Carrito extends AppCompatActivity {
                 calcularSubTotal();
                 calcularImpuestoIVA();
                 calcularTotal();
-                // Actualizar Firebase
                 actualizarCarritoEnFirebase();
             });
 
@@ -113,19 +113,34 @@ public class Carrito extends AppCompatActivity {
                     calcularSubTotal();
                     calcularImpuestoIVA();
                     calcularTotal();
-                    // Actualizar Firebase
                     actualizarCarritoEnFirebase();
                 } else {
                     Toast.makeText(Carrito.this, "La cantidad no puede ser menor a 1", Toast.LENGTH_SHORT).show();
                 }
             });
         });
-
         recyclerCarrito.setAdapter(carritoAdapter);
+
+        obtenerFirebase(new CarritoCallback() {
+            @Override
+            public void OnCarritoLista(ArrayList<Producto> carritos) {
+                carrito.clear();
+                carrito.addAll(carritos);
+
+                carritoAdapter.updateData(carrito);
+                calcularSubTotal();
+                calcularImpuestoIVA();
+                calcularTotal();
+            }
+
+            @Override
+            public void onError(String Error) {
+                Log.e("Carrito", "Error al obtener carrito: " + Error);
+                Toast.makeText(Carrito.this, "Error al cargar carrito: " + Error, Toast.LENGTH_SHORT).show();
+            }
+        });
+
         btnComprar.setOnClickListener(v -> mostrarDialogoConfirmacion());
-        calcularSubTotal();
-        calcularImpuestoIVA();
-        calcularTotal();
 
         bottomNavigationView.setOnItemSelectedListener(item -> {
             int itemId = item.getItemId();
@@ -134,18 +149,74 @@ public class Carrito extends AppCompatActivity {
                 startActivity(intent);
                 return true;
             } else if (itemId == R.id.itemCarrito) {
-                /*Intent intent = new Intent(Carrito.this, Carrito.class);
-                startActivity(intent);*/
                 return true;
             } else if (itemId == R.id.itemHistorial) {
                 Intent intent = new Intent(Carrito.this, HistorialCompra.class);
                 startActivity(intent);
                 return true;
+            }else if (itemId == R.id.nav_logout) {
+                FirebaseAuth.getInstance().signOut();
+                Intent intent = new Intent(Carrito.this, MainActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(intent);
+                finish();
+                return true;
             } else {
                 return false;
             }
         });
+    }
 
+    private void obtenerFirebase(CarritoCallback callback) {
+        if (userId == null) {
+            callback.onError("User not authenticated.");
+            return;
+        }
+
+        mDatabase.child("carritos").child(userId).child("productos")
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        ArrayList<Producto> loadedCarrito = new ArrayList<>();
+
+                        for (DataSnapshot productoSnapshot : dataSnapshot.getChildren()) {
+                            try {
+                                String nombre = productoSnapshot.child("nombre").getValue(String.class);
+                                Double precio = productoSnapshot.child("precio").getValue(Double.class);
+                                Integer cantidad = productoSnapshot.child("cantidad").getValue(Integer.class);
+
+                                Integer imagenUrl = 0;
+                                if (productoSnapshot.child("imagenUrl").exists()) {
+                                    Object imgUrlObj = productoSnapshot.child("imagenUrl").getValue();
+                                    if (imgUrlObj instanceof Long) {
+                                        imagenUrl = ((Long) imgUrlObj).intValue();
+                                    } else if (imgUrlObj instanceof Integer) {
+                                        imagenUrl = (Integer) imgUrlObj;
+                                    }
+                                }
+
+                                String categoria = productoSnapshot.child("categoria").getValue(String.class);
+
+                                if (nombre != null && precio != null && cantidad != null && categoria != null) {
+                                    Producto producto = new Producto(nombre, precio, imagenUrl, categoria);
+                                    producto.setCantidad(cantidad);
+                                    loadedCarrito.add(producto);
+                                }
+                            } catch (Exception e) {
+                                Log.e("Carrito", "Error al cargar producto del carrito: " + e.getMessage());
+                            }
+                        }
+
+                        callback.OnCarritoLista(loadedCarrito);
+                        Log.d("Carrito", "Carrito cargado: " + loadedCarrito.size() + " productos");
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                        Log.e("Carrito", "Error al cargar carrito: " + databaseError.getMessage());
+                        callback.onError(databaseError.getMessage());
+                    }
+                });
     }
 
     private void initializeFirebase() {
@@ -161,14 +232,12 @@ public class Carrito extends AppCompatActivity {
         if (userId == null) return;
 
         if (carrito.isEmpty()) {
-            // Si el carrito está vacío, eliminar de Firebase
             mDatabase.child("carritos").child(userId)
                     .removeValue()
                     .addOnFailureListener(e -> {
                         Log.e("Carrito", "Error al limpiar carrito: " + e.getMessage());
                     });
         } else {
-            // Actualizar carrito en Firebase
             List<Map<String, Object>> productosCarrito = new ArrayList<>();
             for (Producto producto : carrito) {
                 Map<String, Object> productoData = new HashMap<>();
@@ -282,7 +351,6 @@ public class Carrito extends AppCompatActivity {
                 .setValue(compra)
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
-                        // Limpiar carrito de Firebase después de compra exitosa
                         limpiarCarritoDeFirebase();
                         mostrarDialogoExito();
                     } else {
@@ -313,16 +381,13 @@ public class Carrito extends AppCompatActivity {
         builder.setCancelable(false);
 
         builder.setPositiveButton("Aceptar", (dialog, which) -> {
-            // Limpiar carrito local
             carrito.clear();
             carritoAdapter.updateData(carrito);
 
-            // Actualizar totales
             calcularSubTotal();
             calcularImpuestoIVA();
             calcularTotal();
 
-            // Redirigir a Home
             Intent intent = new Intent(Carrito.this, Home.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
             startActivity(intent);
@@ -331,5 +396,10 @@ public class Carrito extends AppCompatActivity {
 
         AlertDialog dialog = builder.create();
         dialog.show();
+    }
+
+    public interface CarritoCallback{
+        void OnCarritoLista(ArrayList<Producto> carritos);
+        void onError(String Error);
     }
 }

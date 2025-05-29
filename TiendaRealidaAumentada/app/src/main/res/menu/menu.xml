@@ -17,5 +17,11 @@
         android:title="Historial"
         android:icon="@drawable/file"
         />
+    <item
+        android:id="@+id/nav_logout"
+        android:title="Cerrar sesion"
+        android:icon="@drawable/outline_article_person_24"
+        />
+
 
 </menu>

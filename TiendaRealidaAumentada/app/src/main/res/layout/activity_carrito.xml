@@ -11,12 +11,12 @@
         android:id="@+id/textView4"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="200dp"
-        android:layout_marginTop="80dp"
+        android:layout_marginTop="60dp"
         android:text="Cart"
         android:textColor="@color/black"
         android:textSize="20sp"
         android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -75,7 +75,7 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerCarrito"
-        android:layout_width="412dp"
+        android:layout_width="match_parent"
         android:layout_height="389dp"
         android:layout_marginTop="40dp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -89,10 +89,15 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="44dp"
         android:layout_marginTop="20dp"
+        android:layout_marginEnd="295dp"
+        android:layout_marginBottom="25dp"
         android:text="Resumen"
         android:textColor="#101418"
         android:textSize="17dp"
         android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/textView9"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/recyclerCarrito" />
 
@@ -164,7 +169,7 @@
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNavigationView"
-        android:layout_width="421dp"
+        android:layout_width="match_parent"
         android:layout_height="112dp"
         android:layout_marginTop="76dp"
         app:layout_constraintBottom_toBottomOf="parent"
