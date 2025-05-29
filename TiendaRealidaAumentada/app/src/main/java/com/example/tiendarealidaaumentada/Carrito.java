@@ -154,6 +154,13 @@ public class Carrito extends AppCompatActivity {
                 Intent intent = new Intent(Carrito.this, HistorialCompra.class);
                 startActivity(intent);
                 return true;
+            }else if (itemId == R.id.nav_logout) {
+                FirebaseAuth.getInstance().signOut();
+                Intent intent = new Intent(Carrito.this, MainActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(intent);
+                finish();
+                return true;
             } else {
                 return false;
             }

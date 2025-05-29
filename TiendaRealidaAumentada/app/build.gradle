@@ -57,7 +57,6 @@ dependencies {
         exclude module: 'sceneform-ux-android'
     }
 
-    // Usar solo Sceneform de Thomas Gorisse (fork mantenido)
     implementation("com.gorisse.thomas.sceneform:sceneform:1.21.0") {
         exclude group: 'com.google.ar.sceneform'
         exclude module: 'core'

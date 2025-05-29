@@ -80,6 +80,13 @@ public class HistorialCompra extends AppCompatActivity {
                 return true;
             } else if (itemId == R.id.itemHistorial) {
                 return true;
+            }else if (itemId == R.id.nav_logout) {
+                FirebaseAuth.getInstance().signOut();
+                Intent intent = new Intent(HistorialCompra.this, MainActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(intent);
+                finish();
+                return true;
             } else {
                 return false;
             }

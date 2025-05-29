@@ -73,6 +73,7 @@ public class register extends AppCompatActivity {
         if (user != null){
             Intent intent = new Intent(register.this, MainActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            intent.putExtra("direccion", "register");
             startActivity(intent);
             finish();
         }else {

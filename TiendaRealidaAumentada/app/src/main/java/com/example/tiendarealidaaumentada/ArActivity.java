@@ -279,8 +279,8 @@ public class ArActivity extends AppCompatActivity {
         // Arquitectura
         modelosParaEscaladoG.add("bar_sign_board");
         modelosParaEscaladoG.add("neon_sign_board_food");
-        modelosParaEscaladoMG.add("ikea_alex_drawer");
-        modelosParaEscaladoMG.add("wooden_chest");
+        modelosParaEscaladoMMG.add("ikea_alex_drawer");
+        modelosParaEscaladoG.add("wooden_chest");
 
         // Vehiculo
         modelosParaEscaladoG.add("atlantic_explorer_submarineglb");//se ve muy pequeño

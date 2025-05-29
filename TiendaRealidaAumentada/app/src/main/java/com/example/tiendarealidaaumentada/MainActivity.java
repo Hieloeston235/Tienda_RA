@@ -36,6 +36,7 @@ public class MainActivity extends AppCompatActivity {
     private Button btnIniciarSesion;
     private Button btnRegistrarse;
     private FirebaseAuth mAuth;
+    private String direccion = "MainActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,7 +70,7 @@ public class MainActivity extends AppCompatActivity {
     public void onStart() {
         super.onStart();
         FirebaseUser currentUser = mAuth.getCurrentUser();
-        if(currentUser != null){
+        if(currentUser != null ){
             Intent intent = new Intent(MainActivity.this, Home.class);
             startActivity(intent);
             finish();
