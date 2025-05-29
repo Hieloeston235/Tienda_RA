@@ -474,17 +474,23 @@ public class Home extends AppCompatActivity {
         ProductosIniciales.add(new Producto("Taser", 10.99, R.drawable.taser, "Armas"));
         ProductosIniciales.add(new Producto("Martillo", 10.99, R.drawable.martillo, "Armas"));
 
-        ProductosIniciales.add(new Producto("Motherboard", 10.99, R.drawable.motherboard, "Arquitectura"));
-        ProductosIniciales.add(new Producto("Motherboard", 10.99, R.drawable.motherboard, "Arquitectura"));
-        ProductosIniciales.add(new Producto("Motherboard", 10.99, R.drawable.motherboard, "Arquitectura"));
-        ProductosIniciales.add(new Producto("Motherboard", 10.99, R.drawable.motherboard, "Arquitectura"));
-        ProductosIniciales.add(new Producto("Motherboard", 10.99, R.drawable.motherboard, "Arquitectura"));
+        ProductosIniciales.add(new Producto("Kawasaki Ninja H2", 1200.99, R.drawable.kawasaki, "Carro y vehiculo"));
+        ProductosIniciales.add(new Producto("Atlantic Explorer Submarine", 19999, R.drawable.artantic, "Carro y vehiculo"));
+        ProductosIniciales.add(new Producto("toyota corolla mk7", 10.99, R.drawable.toyota7gen, "Carro y vehiculo"));
+        ProductosIniciales.add(new Producto("Ibishu Pigeon", 10.99, R.drawable.ibishupigeon, "Carro y vehiculo"));
+        ProductosIniciales.add(new Producto("Fighter Jet", 10.99, R.drawable.chavarriacar, "Carro y vehiculo"));
 
-        ProductosIniciales.add(new Producto("Motherboard", 10.99, R.drawable.motherboard, "Carro y Vehiculo"));
-        ProductosIniciales.add(new Producto("Motherboard", 10.99, R.drawable.motherboard, "Carro y Vehiculo"));
-        ProductosIniciales.add(new Producto("Motherboard", 10.99, R.drawable.motherboard, "Carro y Vehiculo"));
-        ProductosIniciales.add(new Producto("Motherboard", 10.99, R.drawable.motherboard, "Carro y Vehiculo"));
-        ProductosIniciales.add(new Producto("Motherboard", 10.99, R.drawable.motherboard, "Carro y Vehiculo"));
+        ProductosIniciales.add(new Producto("Letrero Neo (Bar)", 10.99, R.drawable.barletrero, "Arquitectura"));
+        ProductosIniciales.add(new Producto("Letrero Neo (Coctel)", 10.99, R.drawable.coctelletrero, "Arquitectura"));
+        ProductosIniciales.add(new Producto("Archivero IKE", 10.99, R.drawable.archivadoike, "Arquitectura"));
+        ProductosIniciales.add(new Producto("Silla de madera", 10.99, R.drawable.sillamadera, "Arquitectura"));
+        ProductosIniciales.add(new Producto("Cofre de Madera", 10.99, R.drawable.cofremadera, "Arquitectura"));
+
+        ProductosIniciales.add(new Producto("Sneakers \"Seen\"", 10.99, R.drawable.sneakers, "Otros"));
+        ProductosIniciales.add(new Producto("Worn Football", 10.99, R.drawable.wormball, "Otros"));
+        ProductosIniciales.add(new Producto("Large Corner Sectional Sofa", 10.99, R.drawable.sofarconerlarge, "Otros"));
+        ProductosIniciales.add(new Producto("Sofa", 10.99, R.drawable.sofa, "Otros"));
+        ProductosIniciales.add(new Producto("Wooden Crate", 10.99, R.drawable.woodencrate, "Otros"));
 
         
 
