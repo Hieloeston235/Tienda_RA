@@ -463,35 +463,35 @@ public class Home extends AppCompatActivity {
 
     private void crearProducto(ProductoCallback callback) {
         ArrayList<Producto> ProductosIniciales = new ArrayList<>();
-        ProductosIniciales.add(new Producto("Camara", 40.99, R.drawable.camera, "Electronica"));
-        ProductosIniciales.add(new Producto("Premier Ball", 103.99, R.drawable.premierball, "Electronica"));
-        ProductosIniciales.add(new Producto("Lapto Cyber Punk", 1000.99, R.drawable.laptosciberpunk, "Electronica"));
-        ProductosIniciales.add(new Producto("HQD Ultima Pro Max 15000", 899.99, R.drawable.hqdultimapromax15000, "Electronica"));
-        ProductosIniciales.add(new Producto("hello tv", 500.99, R.drawable.hellotv, "Electronica"));
+        ProductosIniciales.add(new Producto("Camara", 40.99, R.drawable.camera, "Electronica", "camara"));
+        ProductosIniciales.add(new Producto("Premier Ball", 103.99, R.drawable.premierball, "Electronica","Premier Ball"));
+        ProductosIniciales.add(new Producto("Lapto Cyber Punk", 1000.99, R.drawable.laptosciberpunk, "Electronica", "cyberpunk_laptop"));//muy grande
+        ProductosIniciales.add(new Producto("HQD Ultima Pro Max 15000", 899.99, R.drawable.hqdultimapromax15000, "Electronica", "hqd_ultima_pro_max_15000"));// de ve raro su escala es 0.005f
+        ProductosIniciales.add(new Producto("hello tv", 500.99, R.drawable.hellotv, "Electronica", "hello tv"));
 
         ProductosIniciales.add(new Producto("Rifle de asalto", 1.99, R.drawable.rifleasalto, "Armas", "rifleassalto"));
-        ProductosIniciales.add(new Producto("Pistola ", 1.99, R.drawable.desearteagle, "Armas"));
-        ProductosIniciales.add(new Producto("Bomba C4", 10.99, R.drawable.bombac4, "Armas", "bomb__c4_explosive_model_cs2"));
-        ProductosIniciales.add(new Producto("Taser", 10.99, R.drawable.taser, "Armas"));
-        ProductosIniciales.add(new Producto("Martillo", 10.99, R.drawable.martillo, "Armas"));
+        ProductosIniciales.add(new Producto("Pistola ", 1.99, R.drawable.desearteagle, "Armas", "pistol__desert_eagle"));
+        ProductosIniciales.add(new Producto("Bomba C4", 10.99, R.drawable.bombac4, "Armas", "bomb__c4_explosive"));
+        ProductosIniciales.add(new Producto("Taser", 10.99, R.drawable.taser, "Armas", "taser__zeus"));
+        ProductosIniciales.add(new Producto("Martillo", 10.99, R.drawable.martillo, "Armas", "tool__hammer"));
 
-        ProductosIniciales.add(new Producto("Kawasaki Ninja H2", 1200.99, R.drawable.kawasaki, "Vehiculo"));
+        ProductosIniciales.add(new Producto("Kawasaki Ninja H2", 1200.99, R.drawable.kawasaki, "Vehiculo", "kawasaki_ninja_h2"));
         ProductosIniciales.add(new Producto("Atlantic Explorer Submarine", 19999, R.drawable.artantic, "Vehiculo", "atlantic_explorer_submarineglb"));
-        ProductosIniciales.add(new Producto("toyota corolla mk7", 10.99, R.drawable.toyota7gen, "Vehiculo"));
-        ProductosIniciales.add(new Producto("Ibishu Pigeon", 10.99, R.drawable.ibishupigeon, "Vehiculo"));
-        ProductosIniciales.add(new Producto("Fighter Jet", 10.99, R.drawable.chavarriacar, "Vehiculo"));
+        ProductosIniciales.add(new Producto("toyota corolla mk7", 10.99, R.drawable.toyota7gen, "Vehiculo", "toyota_corolla_mk7"));
+        ProductosIniciales.add(new Producto("Ibishu Pigeon", 10.99, R.drawable.ibishupigeon, "Vehiculo", "ibishu_pigeon"));
+        ProductosIniciales.add(new Producto("Fighter Jet", 10.99, R.drawable.chavarriacar, "Vehiculo", "fighter_jet"));
 
         ProductosIniciales.add(new Producto("Letrero Neo (Bar)", 10.99, R.drawable.barletrero, "Arquitectura", "bar_sign_board"));
-        ProductosIniciales.add(new Producto("Letrero Neo (Coctel)", 10.99, R.drawable.coctelletrero, "Arquitectura"));
-        ProductosIniciales.add(new Producto("Archivero IKE", 10.99, R.drawable.archivadoike, "Arquitectura"));
+        ProductosIniciales.add(new Producto("Letrero Neo (Coctel)", 10.99, R.drawable.coctelletrero, "Arquitectura", "neon_sign_board_food"));
+        ProductosIniciales.add(new Producto("Archivero IKE", 10.99, R.drawable.archivadoike, "Arquitectura", "ikea_alex_drawer"));
         ProductosIniciales.add(new Producto("Silla de madera", 10.99, R.drawable.sillamadera, "Arquitectura", "3d_scan_quixel_megascans_wooden_chair_5"));
-        ProductosIniciales.add(new Producto("Cofre de Madera", 10.99, R.drawable.cofremadera, "Arquitectura"));
+        ProductosIniciales.add(new Producto("Cofre de Madera", 10.99, R.drawable.cofremadera, "Arquitectura","wooden_chest"));
 
-        ProductosIniciales.add(new Producto("Sneakers \"Seen\"", 10.99, R.drawable.sneakers, "Otros"));
-        ProductosIniciales.add(new Producto("Worn Football", 10.99, R.drawable.wormball, "Otros"));
-        ProductosIniciales.add(new Producto("Large Corner Sectional Sofa", 10.99, R.drawable.sofarconerlarge, "Otros"));
-        ProductosIniciales.add(new Producto("Sofa", 10.99, R.drawable.sofa, "Otros"));
-        ProductosIniciales.add(new Producto("Wooden Crate", 10.99, R.drawable.woodencrate, "Otros"));
+        ProductosIniciales.add(new Producto("Sneakers \"Seen\"", 10.99, R.drawable.sneakers, "Otros", "sneakers_seen"));
+        ProductosIniciales.add(new Producto("Worn Football", 10.99, R.drawable.wormball, "Otros", "worn_football"));
+        ProductosIniciales.add(new Producto("Large Corner Sectional Sofa", 10.99, R.drawable.sofarconerlarge, "Otros", "large_corner_sectional_sofa"));
+        ProductosIniciales.add(new Producto("Sofa", 10.99, R.drawable.sofa, "Otros", "sofa"));
+        ProductosIniciales.add(new Producto("Wooden Crate", 10.99, R.drawable.woodencrate, "Otros", "wooden_crate"));
 
         
 

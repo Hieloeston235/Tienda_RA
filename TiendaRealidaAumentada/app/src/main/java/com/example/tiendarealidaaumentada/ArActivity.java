@@ -2,6 +2,7 @@ package com.example.tiendarealidaaumentada;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
@@ -36,7 +37,6 @@ import com.google.ar.sceneform.math.Vector3;
 import com.google.ar.sceneform.rendering.Renderable;
 import android.net.Uri;
 
-
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
@@ -48,6 +48,7 @@ public class ArActivity extends AppCompatActivity {
     private boolean installRequested = false;
     private boolean modelLoaded = false;
     private String Modelo;
+    private float dynamicScale = 1.0f; // Factor de escala calculado dinámicamente
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,11 +60,53 @@ public class ArActivity extends AppCompatActivity {
         Intent intent= getIntent();
         Modelo = intent.getStringExtra("Modelo1");
 
+        // Calcular factor de escala basado en el dispositivo
+        calculateDynamicScale();
+
         // Cargar el modelo 3D
         loadModel();
 
         // Configurar el listener para detectar planos
         arSceneView.getScene().addOnUpdateListener(this::onUpdateFrame);
+    }
+
+    /**
+     * Calcula un factor de escala dinámico basado en las características del dispositivo
+     */
+    private void calculateDynamicScale() {
+        DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
+
+        // Obtener dimensiones de pantalla en píxeles
+        int screenWidth = displayMetrics.widthPixels;
+        int screenHeight = displayMetrics.heightPixels;
+        float density = displayMetrics.density;
+
+        // Calcular diagonal de pantalla en pulgadas
+        float widthInches = screenWidth / (displayMetrics.xdpi);
+        float heightInches = screenHeight / (displayMetrics.ydpi);
+        double diagonalInches = Math.sqrt(Math.pow(widthInches, 2) + Math.pow(heightInches, 2));
+
+        // Factor base según el tamaño de pantalla
+        float baseScale;
+        if (diagonalInches < 5.0) {
+            // Pantallas pequeñas (< 5")
+            baseScale = 0.003f;
+        } else if (diagonalInches < 7.0) {
+            // Pantallas medianas (5" - 7")
+            baseScale = 0.004f;
+        } else {
+            // Pantallas grandes (> 7")
+            baseScale = 0.006f;
+        }
+
+        // Ajustar según la densidad de pantalla
+        float densityFactor = Math.min(density / 2.0f, 1.5f);
+
+        // Calcular escala final
+        dynamicScale = baseScale * densityFactor;
+
+        Log.d(TAG, String.format("Pantalla: %.1f\" | Densidad: %.1f | Escala: %.4f",
+                diagonalInches, density, dynamicScale));
     }
 
     private void loadModel() {
@@ -72,7 +115,7 @@ public class ArActivity extends AppCompatActivity {
             ModelRenderable.builder()
                     .setSource(this, RenderableSource.builder()
                             .setSource(this, Uri.parse("file:///android_asset/models/foxy.glb"), RenderableSource.SourceType.GLB)
-                            .setScale(0.5f) // Escala del modelo
+                            .setScale(dynamicScale * 10f) // Escala ajustada dinámicamente (foxy necesita más escala)
                             .setRecenterMode(RenderableSource.RecenterMode.ROOT)
                             .build())
                     .setRegistryId("Duck")
@@ -80,7 +123,7 @@ public class ArActivity extends AppCompatActivity {
                     .thenAccept(renderable -> {
                         toyCarRenderable = renderable;
                         modelLoaded = true;
-                        Log.d(TAG, "Modelo cargado exitosamente");
+                        Log.d(TAG, "Modelo Foxy cargado exitosamente con escala: " + (dynamicScale * 10f));
                         Toast.makeText(this, "Modelo cargado. Busca una superficie plana.", Toast.LENGTH_SHORT).show();
                     })
                     .exceptionally(throwable -> {
@@ -95,8 +138,7 @@ public class ArActivity extends AppCompatActivity {
             ModelRenderable.builder()
                     .setSource(this, RenderableSource.builder()
                             .setSource(this, Uri.parse(ruta), RenderableSource.SourceType.GLB)
-                            //.setSource(this, Uri.parse("file:///android_asset/models/3d_scan_quixel_megascans_wooden_chair_5.glb"), RenderableSource.SourceType.GLB)
-                            .setScale(0.5f) // Escala del modelo
+                            .setScale(dynamicScale) // Escala ajustada dinámicamente
                             .setRecenterMode(RenderableSource.RecenterMode.ROOT)
                             .build())
                     .setRegistryId("Duck")
@@ -104,7 +146,7 @@ public class ArActivity extends AppCompatActivity {
                     .thenAccept(renderable -> {
                         toyCarRenderable = renderable;
                         modelLoaded = true;
-                        Log.d(TAG, "Modelo cargado exitosamente");
+                        Log.d(TAG, "Modelo " + Modelo + " cargado exitosamente con escala: " + dynamicScale);
                         Toast.makeText(this, "Modelo cargado. Busca una superficie plana.", Toast.LENGTH_SHORT).show();
                     })
                     .exceptionally(throwable -> {
@@ -113,7 +155,6 @@ public class ArActivity extends AppCompatActivity {
                         return null;
                     });
         }
-
     }
 
     private void onUpdateFrame(FrameTime frameTime) {
@@ -143,8 +184,6 @@ public class ArActivity extends AppCompatActivity {
         return new Point(vw.getWidth() / 2, vw.getHeight() / 2);
     }
 
-
-
     private void placeObject(Anchor anchor) {
         AnchorNode anchorNode = new AnchorNode(anchor);
         anchorNode.setParent(arSceneView.getScene());
@@ -153,12 +192,24 @@ public class ArActivity extends AppCompatActivity {
         modelNode.setParent(anchorNode);
         modelNode.setRenderable(toyCarRenderable);
         modelNode.setLocalPosition(new Vector3(0.0f, 0.1f, 0.0f));
-        modelNode.setLocalScale(new Vector3(0.8f, 0.8f, 0.8f));
 
-        Log.d(TAG, "Objeto colocado en la superficie");
+        // Escala adicional basada en el tamaño de pantalla (más conservadora)
+        float finalScale = Math.min(0.8f * (float)(getScreenDiagonalInches() / 6.0), 1.2f);
+        modelNode.setLocalScale(new Vector3(finalScale, finalScale, finalScale));
+
+        Log.d(TAG, "Objeto colocado con escala final: " + finalScale);
         Toast.makeText(this, "¡Objeto colocado!", Toast.LENGTH_SHORT).show();
     }
 
+    /**
+     * Obtiene el tamaño diagonal de la pantalla en pulgadas
+     */
+    private double getScreenDiagonalInches() {
+        DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
+        float widthInches = displayMetrics.widthPixels / displayMetrics.xdpi;
+        float heightInches = displayMetrics.heightPixels / displayMetrics.ydpi;
+        return Math.sqrt(Math.pow(widthInches, 2) + Math.pow(heightInches, 2));
+    }
 
     @Override
     protected void onResume() {
@@ -227,7 +278,6 @@ public class ArActivity extends AppCompatActivity {
             finish();
         }
     }
-
 
     @Override
     public void onPause() {

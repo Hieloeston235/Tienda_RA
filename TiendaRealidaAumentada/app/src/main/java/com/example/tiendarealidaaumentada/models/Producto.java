@@ -12,6 +12,7 @@ public class Producto implements Parcelable {
     private String Categoria;
     private int cantidad;
     private String ModeloString;
+    private double Escala;
 
     public String getModeloString() {
         return ModeloString;
