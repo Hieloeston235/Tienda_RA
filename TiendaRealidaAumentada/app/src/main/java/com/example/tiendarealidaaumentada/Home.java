@@ -392,6 +392,7 @@ public class Home extends AppCompatActivity {
                     btnVerAR = holder.itemView.findViewById(R.id.btnVerEnAR);
                     btnVerAR.setOnClickListener(v -> {
                         Intent intentAr = new Intent(Home.this, ArActivity.class);
+                        intentAr.putExtra("Modelo1",producto.getModeloString());
                         //intent.putExtra("producto", producto);
                         startActivity(intentAr);
                     });
@@ -468,22 +469,22 @@ public class Home extends AppCompatActivity {
         ProductosIniciales.add(new Producto("HQD Ultima Pro Max 15000", 899.99, R.drawable.hqdultimapromax15000, "Electronica"));
         ProductosIniciales.add(new Producto("hello tv", 500.99, R.drawable.hellotv, "Electronica"));
 
-        ProductosIniciales.add(new Producto("Rifle de asalto", 1.99, R.drawable.rifleasalto, "Armas"));
+        ProductosIniciales.add(new Producto("Rifle de asalto", 1.99, R.drawable.rifleasalto, "Armas", "rifleassalto"));
         ProductosIniciales.add(new Producto("Pistola ", 1.99, R.drawable.desearteagle, "Armas"));
-        ProductosIniciales.add(new Producto("Bomba C4", 10.99, R.drawable.bombac4, "Armas"));
+        ProductosIniciales.add(new Producto("Bomba C4", 10.99, R.drawable.bombac4, "Armas", "bomb__c4_explosive_model_cs2"));
         ProductosIniciales.add(new Producto("Taser", 10.99, R.drawable.taser, "Armas"));
         ProductosIniciales.add(new Producto("Martillo", 10.99, R.drawable.martillo, "Armas"));
 
-        ProductosIniciales.add(new Producto("Kawasaki Ninja H2", 1200.99, R.drawable.kawasaki, "Carro y vehiculo"));
-        ProductosIniciales.add(new Producto("Atlantic Explorer Submarine", 19999, R.drawable.artantic, "Carro y vehiculo"));
-        ProductosIniciales.add(new Producto("toyota corolla mk7", 10.99, R.drawable.toyota7gen, "Carro y vehiculo"));
-        ProductosIniciales.add(new Producto("Ibishu Pigeon", 10.99, R.drawable.ibishupigeon, "Carro y vehiculo"));
-        ProductosIniciales.add(new Producto("Fighter Jet", 10.99, R.drawable.chavarriacar, "Carro y vehiculo"));
+        ProductosIniciales.add(new Producto("Kawasaki Ninja H2", 1200.99, R.drawable.kawasaki, "Vehiculo"));
+        ProductosIniciales.add(new Producto("Atlantic Explorer Submarine", 19999, R.drawable.artantic, "Vehiculo", "atlantic_explorer_submarineglb"));
+        ProductosIniciales.add(new Producto("toyota corolla mk7", 10.99, R.drawable.toyota7gen, "Vehiculo"));
+        ProductosIniciales.add(new Producto("Ibishu Pigeon", 10.99, R.drawable.ibishupigeon, "Vehiculo"));
+        ProductosIniciales.add(new Producto("Fighter Jet", 10.99, R.drawable.chavarriacar, "Vehiculo"));
 
-        ProductosIniciales.add(new Producto("Letrero Neo (Bar)", 10.99, R.drawable.barletrero, "Arquitectura"));
+        ProductosIniciales.add(new Producto("Letrero Neo (Bar)", 10.99, R.drawable.barletrero, "Arquitectura", "bar_sign_board"));
         ProductosIniciales.add(new Producto("Letrero Neo (Coctel)", 10.99, R.drawable.coctelletrero, "Arquitectura"));
         ProductosIniciales.add(new Producto("Archivero IKE", 10.99, R.drawable.archivadoike, "Arquitectura"));
-        ProductosIniciales.add(new Producto("Silla de madera", 10.99, R.drawable.sillamadera, "Arquitectura"));
+        ProductosIniciales.add(new Producto("Silla de madera", 10.99, R.drawable.sillamadera, "Arquitectura", "3d_scan_quixel_megascans_wooden_chair_5"));
         ProductosIniciales.add(new Producto("Cofre de Madera", 10.99, R.drawable.cofremadera, "Arquitectura"));
 
         ProductosIniciales.add(new Producto("Sneakers \"Seen\"", 10.99, R.drawable.sneakers, "Otros"));

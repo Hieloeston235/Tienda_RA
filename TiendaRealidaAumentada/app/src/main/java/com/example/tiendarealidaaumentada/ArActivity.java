@@ -1,5 +1,6 @@
 package com.example.tiendarealidaaumentada;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -46,6 +47,7 @@ public class ArActivity extends AppCompatActivity {
     private ModelRenderable toyCarRenderable;
     private boolean installRequested = false;
     private boolean modelLoaded = false;
+    private String Modelo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,7 +56,8 @@ public class ArActivity extends AppCompatActivity {
 
         arSceneView = findViewById(R.id.arSceneView);
         arSceneView.getPlaneRenderer().setVisible(true);
-
+        Intent intent= getIntent();
+        Modelo = intent.getStringExtra("Modelo1");
 
         // Cargar el modelo 3D
         loadModel();
@@ -64,26 +67,53 @@ public class ArActivity extends AppCompatActivity {
     }
 
     private void loadModel() {
-        // Cargar el modelo ToyCar.glb desde assets
-        ModelRenderable.builder()
-                .setSource(this, RenderableSource.builder()
-                        .setSource(this, Uri.parse("file:///android_asset/models/rifleasalto.glb"), RenderableSource.SourceType.GLB)
-                        .setScale(0.5f) // Escala del modelo
-                        .setRecenterMode(RenderableSource.RecenterMode.ROOT)
-                        .build())
-                .setRegistryId("Duck")
-                .build()
-                .thenAccept(renderable -> {
-                    toyCarRenderable = renderable;
-                    modelLoaded = true;
-                    Log.d(TAG, "Modelo cargado exitosamente");
-                    Toast.makeText(this, "Modelo cargado. Busca una superficie plana.", Toast.LENGTH_SHORT).show();
-                })
-                .exceptionally(throwable -> {
-                    Log.e(TAG, "Error al cargar el modelo", throwable);
-                    Toast.makeText(this, "Error al cargar el modelo 3D", Toast.LENGTH_SHORT).show();
-                    return null;
-                });
+        //si existe el modelo del producto carga el modelo del producto y si no cargara a foxy el pirata
+        if (Modelo == null) {
+            ModelRenderable.builder()
+                    .setSource(this, RenderableSource.builder()
+                            .setSource(this, Uri.parse("file:///android_asset/models/foxy.glb"), RenderableSource.SourceType.GLB)
+                            .setScale(0.5f) // Escala del modelo
+                            .setRecenterMode(RenderableSource.RecenterMode.ROOT)
+                            .build())
+                    .setRegistryId("Duck")
+                    .build()
+                    .thenAccept(renderable -> {
+                        toyCarRenderable = renderable;
+                        modelLoaded = true;
+                        Log.d(TAG, "Modelo cargado exitosamente");
+                        Toast.makeText(this, "Modelo cargado. Busca una superficie plana.", Toast.LENGTH_SHORT).show();
+                    })
+                    .exceptionally(throwable -> {
+                        Log.e(TAG, "Error al cargar el modelo", throwable);
+                        Toast.makeText(this, "Error al cargar el modelo 3D", Toast.LENGTH_SHORT).show();
+                        return null;
+                    });
+        }
+        else {
+            String ruta = "file:///android_asset/models/"+ Modelo + ".glb";
+            // Cargar el modelo ToyCar.glb desde assets
+            ModelRenderable.builder()
+                    .setSource(this, RenderableSource.builder()
+                            .setSource(this, Uri.parse(ruta), RenderableSource.SourceType.GLB)
+                            //.setSource(this, Uri.parse("file:///android_asset/models/3d_scan_quixel_megascans_wooden_chair_5.glb"), RenderableSource.SourceType.GLB)
+                            .setScale(0.5f) // Escala del modelo
+                            .setRecenterMode(RenderableSource.RecenterMode.ROOT)
+                            .build())
+                    .setRegistryId("Duck")
+                    .build()
+                    .thenAccept(renderable -> {
+                        toyCarRenderable = renderable;
+                        modelLoaded = true;
+                        Log.d(TAG, "Modelo cargado exitosamente");
+                        Toast.makeText(this, "Modelo cargado. Busca una superficie plana.", Toast.LENGTH_SHORT).show();
+                    })
+                    .exceptionally(throwable -> {
+                        Log.e(TAG, "Error al cargar el modelo", throwable);
+                        Toast.makeText(this, "Error al cargar el modelo 3D", Toast.LENGTH_SHORT).show();
+                        return null;
+                    });
+        }
+
     }
 
     private void onUpdateFrame(FrameTime frameTime) {
