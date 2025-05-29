@@ -58,7 +58,6 @@ public class Home extends AppCompatActivity {
     private ArrayList<Producto> carrito = new ArrayList<>();
     private BottomNavigationView bottomNavigationView;
 
-    // Firebase
     private FirebaseAuth mAuth;
     private DatabaseReference mDatabase;
     private String userId;
@@ -74,9 +73,7 @@ public class Home extends AppCompatActivity {
             return insets;
         });
 
-        // Inicializar Firebase
         initializeFirebase();
-
 
         recyclerViewCategoria = findViewById(R.id.recyclerCategorias);
         recyclerViewProductos = findViewById(R.id.recyclerProductos);
@@ -84,9 +81,6 @@ public class Home extends AppCompatActivity {
         bottomNavigationView = findViewById(R.id.bottomNavigationView);
         bottomNavigationView.setSelectedItemId(R.id.itemHome);
 
-        //categorias.add("Categoria 1");
-        //categorias.add("Categoria 2");
-        //categorias.add("Categoria 3");
 
 
         inicializarCategoria();
@@ -113,7 +107,6 @@ public class Home extends AppCompatActivity {
             }
         });
 
-        // Cargar carrito desde Firebase
         cargarCarritoDesdeFirebase();
     }
 
@@ -132,7 +125,6 @@ public class Home extends AppCompatActivity {
             return;
         }
 
-        // Verificar si el producto ya existe en el carrito local
         boolean productoExiste = false;
         for (Producto p : carrito) {
             if (p.getNombre().equals(producto.getNombre())) {
@@ -142,7 +134,6 @@ public class Home extends AppCompatActivity {
             }
         }
 
-        // Si no existe, agregarlo con cantidad 1
         if (!productoExiste) {
             Producto nuevoProducto = new Producto(
                     producto.getNombre(),
@@ -154,7 +145,6 @@ public class Home extends AppCompatActivity {
             carrito.add(nuevoProducto);
         }
 
-        // Guardar en Firebase
         guardarCarritoEnFirebase();
 
         Toast.makeText(this, producto.getNombre() + " agregado al carrito", Toast.LENGTH_SHORT).show();
@@ -163,7 +153,6 @@ public class Home extends AppCompatActivity {
     private void guardarCarritoEnFirebase() {
         if (userId == null) return;
 
-        // Crear lista de productos para Firebase
         List<Map<String, Object>> productosCarrito = new ArrayList<>();
         for (Producto producto : carrito) {
             Map<String, Object> productoData = new HashMap<>();
@@ -175,7 +164,6 @@ public class Home extends AppCompatActivity {
             productosCarrito.add(productoData);
         }
 
-        // Guardar en Firebase
         mDatabase.child("carritos").child(userId).child("productos")
                 .setValue(productosCarrito)
                 .addOnFailureListener(e -> {
@@ -237,7 +225,6 @@ public class Home extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        // Recargar carrito cuando regrese a la actividad
         cargarCarritoDesdeFirebase();
     }
 
@@ -250,8 +237,6 @@ public class Home extends AppCompatActivity {
 
                         if (!snapshot.exists() || !snapshot.hasChildren()){
                             crearCategoria(callback);
-                            // No llamar traerCategorias aquí, se llamará automáticamente
-                            // cuando se actualice la base de datos
                         }
                         else {
                             traerCategorias(snapshot);
@@ -314,7 +299,7 @@ public class Home extends AppCompatActivity {
 
                     // Solo agregar categorías activas
                     if (nombreCategoria != null && !nombreCategoria.isEmpty() &&
-                            (activa == null || activa)) { // Si activa es null, asumimos true
+                            (activa == null || activa)) {
 
                         if (!categorias.contains(nombreCategoria)) {
                             categorias.add(nombreCategoria);
@@ -440,9 +425,7 @@ public class Home extends AppCompatActivity {
 
                     Producto producto = productoSnapshot.child("producto").getValue(Producto.class);
 
-
-                    // Solo agregar categorías activas
-                    if (producto != null ) { // Si activa es null, asumimos true
+                    if (producto != null ) {
 
                         if (!productos.contains(producto)) {
                             productos.add(producto);
@@ -466,8 +449,8 @@ public class Home extends AppCompatActivity {
 
         ProductosIniciales.add(new Producto("Camara", 40.99, R.drawable.camera, "Electronica", "camara"));
         ProductosIniciales.add(new Producto("Premier Ball", 103.99, R.drawable.premierball, "Electronica","Premier Ball"));
-        ProductosIniciales.add(new Producto("Lapto Cyber Punk", 1000.99, R.drawable.laptosciberpunk, "Electronica", "cyberpunk_laptop"));//muy grande
-        ProductosIniciales.add(new Producto("HQD Ultima Pro Max 15000", 899.99, R.drawable.hqdultimapromax15000, "Electronica", "hqd_ultima_pro_max_15000"));// de ve raro su escala es 0.005f
+        ProductosIniciales.add(new Producto("Lapto Cyber Punk", 1000.99, R.drawable.laptosciberpunk, "Electronica", "cyberpunk_laptop"));
+        ProductosIniciales.add(new Producto("HQD Ultima Pro Max 15000", 899.99, R.drawable.hqdultimapromax15000, "Electronica", "hqd_ultima_pro_max_15000"));
         ProductosIniciales.add(new Producto("hello tv", 500.99, R.drawable.hellotv, "Electronica", "hello tv"));
 
         ProductosIniciales.add(new Producto("Rifle de asalto", 1.99, R.drawable.rifleasalto, "Armas", "rifleassalto"));

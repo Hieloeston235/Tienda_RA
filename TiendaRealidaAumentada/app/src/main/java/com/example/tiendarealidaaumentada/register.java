@@ -52,13 +52,11 @@ public class register extends AppCompatActivity {
             mAuth.createUserWithEmailAndPassword(email, password)
                     .addOnCompleteListener(this, task -> {
                         if (task.isSuccessful()) {
-                            // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "createUserWithEmail:success");
                             FirebaseUser user = mAuth.getCurrentUser();
                             Toast.makeText(register.this, "Registro exitoso.",Toast.LENGTH_SHORT).show();
                             updateUI(user);
                         } else {
-                            // If sign in fails, display a message to the user.
                             Log.w(TAG, "createUserWithEmail:failure", task.getException());
                             Toast.makeText(register.this, "Registro fallido.",
                                     Toast.LENGTH_SHORT).show();
@@ -73,7 +71,6 @@ public class register extends AppCompatActivity {
 
     private void updateUI(FirebaseUser user) {
         if (user != null){
-            //Toast.makeText(register.this, "", Toast.LENGTH_SHORT).show();
             Intent intent = new Intent(register.this, MainActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intent);

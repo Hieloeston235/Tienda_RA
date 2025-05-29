@@ -79,8 +79,6 @@ public class HistorialCompra extends AppCompatActivity {
                 startActivity(intent);
                 return true;
             } else if (itemId == R.id.itemHistorial) {
-                /*Intent intent = new Intent(HistorialCompra.this, HistorialCompra.class);
-                startActivity(intent);*/
                 return true;
             } else {
                 return false;
@@ -114,20 +112,19 @@ public class HistorialCompra extends AppCompatActivity {
                 TextView txtFecha = holder.itemView.findViewById(R.id.txtFechaHistorialProducto);
                 TextView txtPrecio = holder.itemView.findViewById(R.id.txtPrecioHistorialProducto);
 
-                // Mostrar nombres de productos (limitado para no saturar la vista)
+                //Mostrar nombres de productos
                 String nombres = compra.getNombresProductos();
                 if (nombres.length() > 40) {
                     nombres = nombres.substring(0, 37) + "...";
                 }
                 txtNombre.setText(nombres);
 
-                // Formatear y mostrar fecha
+                //mostrar fecha
                 txtFecha.setText(formatearFecha(compra.getFecha()));
 
-                // Mostrar total formateado
+                // Mostrar total
                 txtPrecio.setText(String.format("$%.2f", compra.getTotal()));
 
-                // Opcional: Click listener para ver detalles de la compra
                 holder.itemView.setOnClickListener(v -> {
                     mostrarDetallesCompra(compra);
                 });
@@ -236,7 +233,6 @@ public class HistorialCompra extends AppCompatActivity {
 
     private String formatearFecha(String fechaOriginal) {
         try {
-            // Formato original: "2025-05-23 05:22:21"
             SimpleDateFormat formatoOriginal = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
             SimpleDateFormat formatoMostrar = new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault());
 
@@ -244,12 +240,13 @@ public class HistorialCompra extends AppCompatActivity {
             return formatoMostrar.format(fecha);
         } catch (ParseException e) {
             Log.e("HistorialCompra", "Error al formatear fecha: " + e.getMessage());
-            return fechaOriginal; // Devolver fecha original si hay error
+            return fechaOriginal;
         }
     }
 
+    //Crear diálogo para mostrar detalles de la compra
     private void mostrarDetallesCompra(Compra compra) {
-        // Crear diálogo para mostrar detalles de la compra
+
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Detalles de Compra");
 

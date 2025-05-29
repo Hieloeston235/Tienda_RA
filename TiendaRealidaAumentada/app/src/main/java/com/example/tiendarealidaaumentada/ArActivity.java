@@ -63,7 +63,7 @@ public class ArActivity extends AppCompatActivity {
     private TransformableNode currentModelNode;
     private float lastTouchX;
     private boolean isRotating = false;
-    private static final float ROTATION_SENSITIVITY = 2.0f; // Ajusta la sensibilidad de rotación
+    private static final float ROTATION_SENSITIVITY = 2.0f;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,7 +92,6 @@ public class ArActivity extends AppCompatActivity {
         arSceneView.getScene().addOnUpdateListener(this::onUpdateFrame);
         Log.d(TAG, "addOnUpdateListener para onUpdateFrame configurado.");
 
-        // Configurar el listener de toque personalizado
         arSceneView.getScene().setOnTouchListener((hitTestResult, motionEvent) -> {
             return handleTouch(hitTestResult, motionEvent);
         });
@@ -127,8 +126,7 @@ public class ArActivity extends AppCompatActivity {
                         float currentX = motionEvent.getX();
                         float deltaX = currentX - lastTouchX;
 
-                        // Solo rotar si el movimiento horizontal es significativo
-                        if (Math.abs(deltaX) > 3) { // Umbral mínimo de movimiento
+                        if (Math.abs(deltaX) > 3) {
                             rotateModel(deltaX);
                             lastTouchX = currentX;
                             Log.d(TAG, "Rotando modelo. DeltaX: " + deltaX);
@@ -142,14 +140,11 @@ public class ArActivity extends AppCompatActivity {
                     Log.d(TAG, "Finalizando rotación.");
                     break;
             }
-
-            // Si estamos rotando con un dedo, no pasar el evento al TransformationSystem
             if (isRotating && motionEvent.getPointerCount() == 1) {
                 return true;
             }
         }
 
-        // Para gestos multi-touch o cuando no hay rotación activa, usar TransformationSystem
         transformationSystem.onTouch(hitTestResult, motionEvent);
         return true;
     }
@@ -379,11 +374,10 @@ public class ArActivity extends AppCompatActivity {
         modelNode.getRotationController().setEnabled(true);
         Log.d(TAG, "Controladores de escala, traslación y rotación habilitados.");
 
-        modelNode.getScaleController().setMinScale(0.000025f);//Limite establecido en 10 porciento
-        modelNode.getScaleController().setMaxScale(20f);//Limite establecido en un 50000 porciento
+        modelNode.getScaleController().setMinScale(0.000025f);
+        modelNode.getScaleController().setMaxScale(20f);
         Log.d(TAG, "Límites de escala establecidos: Min=0.01f, Max=500.0f.");
 
-        // Guardar referencia al nodo actual para rotación personalizada
         currentModelNode = modelNode;
 
         transformationSystem.selectNode(modelNode);

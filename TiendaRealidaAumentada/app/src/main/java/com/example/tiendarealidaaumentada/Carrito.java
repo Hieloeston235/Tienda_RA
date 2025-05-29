@@ -43,7 +43,7 @@ public class Carrito extends AppCompatActivity {
 
     private RecyclerView recyclerCarrito;
     private GenericAdapter<Producto> carritoAdapter;
-    private ArrayList<Producto> carrito; // Initialize here
+    private ArrayList<Producto> carrito;
     private TextView txtTotal, txtSubtotal, txtImpuesto;
     private Button btnComprar;
 
@@ -62,7 +62,6 @@ public class Carrito extends AppCompatActivity {
 
         initializeFirebase();
 
-        // Initialize carrito here, before it's used in obtenerFirebase
         carrito = new ArrayList<>();
 
         recyclerCarrito = findViewById(R.id.recyclerCarrito);
@@ -74,7 +73,6 @@ public class Carrito extends AppCompatActivity {
         bottomNavigationView = findViewById(R.id.bottomNavigationView);
         bottomNavigationView.setSelectedItemId(R.id.itemCarrito);
 
-        // Setup RecyclerView and Adapter initially
         recyclerCarrito.setLayoutManager(new LinearLayoutManager(Carrito.this));
         carritoAdapter = new GenericAdapter<>(carrito, R.layout.list_item_carrito, (holder, producto) -> {
             TextView nombre = holder.itemView.findViewById(R.id.txtNomreCarritoProducto);
@@ -92,11 +90,11 @@ public class Carrito extends AppCompatActivity {
 
             eliminar.setOnClickListener(v -> {
                 carrito.remove(producto);
-                carritoAdapter.updateData(carrito); // Update adapter after removal
+                carritoAdapter.updateData(carrito);
                 calcularSubTotal();
                 calcularImpuestoIVA();
                 calcularTotal();
-                actualizarCarritoEnFirebase(); // Update Firebase
+                actualizarCarritoEnFirebase();
             });
 
             increment.setOnClickListener(v -> {
@@ -105,7 +103,7 @@ public class Carrito extends AppCompatActivity {
                 calcularSubTotal();
                 calcularImpuestoIVA();
                 calcularTotal();
-                actualizarCarritoEnFirebase(); // Update Firebase
+                actualizarCarritoEnFirebase();
             });
 
             decrement.setOnClickListener(v -> {
@@ -115,7 +113,7 @@ public class Carrito extends AppCompatActivity {
                     calcularSubTotal();
                     calcularImpuestoIVA();
                     calcularTotal();
-                    actualizarCarritoEnFirebase(); // Update Firebase
+                    actualizarCarritoEnFirebase();
                 } else {
                     Toast.makeText(Carrito.this, "La cantidad no puede ser menor a 1", Toast.LENGTH_SHORT).show();
                 }
@@ -123,16 +121,13 @@ public class Carrito extends AppCompatActivity {
         });
         recyclerCarrito.setAdapter(carritoAdapter);
 
-
-        // Call obtenerFirebase after adapter is set up
         obtenerFirebase(new CarritoCallback() {
             @Override
             public void OnCarritoLista(ArrayList<Producto> carritos) {
-                // This callback now ensures all data is loaded before updating UI
-                carrito.clear(); // Clear existing data to avoid duplicates
-                carrito.addAll(carritos); // Add all loaded products
+                carrito.clear();
+                carrito.addAll(carritos);
 
-                carritoAdapter.updateData(carrito); // Update the adapter with the full list
+                carritoAdapter.updateData(carrito);
                 calcularSubTotal();
                 calcularImpuestoIVA();
                 calcularTotal();
@@ -175,18 +170,18 @@ public class Carrito extends AppCompatActivity {
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        ArrayList<Producto> loadedCarrito = new ArrayList<>(); // Use a temporary list
+                        ArrayList<Producto> loadedCarrito = new ArrayList<>();
 
                         for (DataSnapshot productoSnapshot : dataSnapshot.getChildren()) {
                             try {
                                 String nombre = productoSnapshot.child("nombre").getValue(String.class);
                                 Double precio = productoSnapshot.child("precio").getValue(Double.class);
                                 Integer cantidad = productoSnapshot.child("cantidad").getValue(Integer.class);
-                                // Ensure imagenUrl is correctly retrieved, consider default if null or error
-                                Integer imagenUrl = 0; // Default or placeholder
+
+                                Integer imagenUrl = 0;
                                 if (productoSnapshot.child("imagenUrl").exists()) {
                                     Object imgUrlObj = productoSnapshot.child("imagenUrl").getValue();
-                                    if (imgUrlObj instanceof Long) { // Firebase might store Integers as Longs
+                                    if (imgUrlObj instanceof Long) {
                                         imagenUrl = ((Long) imgUrlObj).intValue();
                                     } else if (imgUrlObj instanceof Integer) {
                                         imagenUrl = (Integer) imgUrlObj;
@@ -204,7 +199,7 @@ public class Carrito extends AppCompatActivity {
                                 Log.e("Carrito", "Error al cargar producto del carrito: " + e.getMessage());
                             }
                         }
-                        // Call the callback once all products are loaded
+
                         callback.OnCarritoLista(loadedCarrito);
                         Log.d("Carrito", "Carrito cargado: " + loadedCarrito.size() + " productos");
                     }
