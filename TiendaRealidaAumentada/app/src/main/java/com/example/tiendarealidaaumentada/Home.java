@@ -271,7 +271,7 @@ public class Home extends AppCompatActivity {
         CategoriasIniciales.add("Armas");
         CategoriasIniciales.add("Electronica");
         CategoriasIniciales.add("Arquitectura");
-        CategoriasIniciales.add("Carro y vehiculo");
+        CategoriasIniciales.add("Vehiculo");
         CategoriasIniciales.add("Otros");
 
         AtomicInteger contador = new AtomicInteger(0);
@@ -463,6 +463,7 @@ public class Home extends AppCompatActivity {
 
     private void crearProducto(ProductoCallback callback) {
         ArrayList<Producto> ProductosIniciales = new ArrayList<>();
+
         ProductosIniciales.add(new Producto("Camara", 40.99, R.drawable.camera, "Electronica", "camara"));
         ProductosIniciales.add(new Producto("Premier Ball", 103.99, R.drawable.premierball, "Electronica","Premier Ball"));
         ProductosIniciales.add(new Producto("Lapto Cyber Punk", 1000.99, R.drawable.laptosciberpunk, "Electronica", "cyberpunk_laptop"));//muy grande
